@@ -68,11 +68,15 @@ class EditAdvocateProfileView(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message" : "Advocate details updated sucessfully"},status=status.HTTP_200_OK)
+            print(serializer._errors)
             return Response({"message" : "Validation error"},status=status.HTTP_400_BAD_REQUEST)
         except Advocate.DoesNotExist:
             return Response({"message" : "Advocate could not be found"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"message" : "An unexcepted error occured "},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
 
 class AdvocateEditFormView(APIView):

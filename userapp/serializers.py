@@ -31,3 +31,18 @@ class UserOnlySerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+# serializers.py
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Include the email in the token's payload
+        token['email'] = user.email
+
+        return token
+
+    
