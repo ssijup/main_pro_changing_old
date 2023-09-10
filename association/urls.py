@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import ( AssociationListView,CourtListView, SuspendAssociationView,
+from .views import ( AssociationListView,CourtListView, SuspendAssociationView,NotificationGetView,
                     EditCourtView,MembershipPlanView,EditAssociationView,CourtEditFormView,
                     ToggleMembershipFineAmountView,ToggleMembershipPlanView, AssociationEditFormView,
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
@@ -51,11 +51,11 @@ urlpatterns = [
    path("fine-amount/list",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),  
 
 #payment
-   path("membership-payment/create",MembershipPaymentView.as_view() ,name="MembershipPaymentView"),
+   path("membership-payment/create/<association_id>/<user_id>/<plan_id>",MembershipPaymentView.as_view() ,name="MembershipPaymentView"),
    path("membership-payment/list",MembershipPaymentView.as_view() ,name="MembershipPaymentView"),
 
  #notification
-   path("notification/list",NotificationView.as_view() ,name="NotificationView"),
+   path("notification/list",NotificationGetView.as_view() ,name="NotificationGetView"),
    path("notification/edit/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("notification/create/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("notification/delete/<id>",NotificationView.as_view() ,name="NotificationView"),

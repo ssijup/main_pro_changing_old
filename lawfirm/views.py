@@ -79,7 +79,7 @@ class EditLawfirmView(APIView):
     def patch(self, request, id):
         try:
             lawfirm=LawFirm.objects.get(id=id)
-            serializer = LawFirmListSerializer(lawfirm, data=request.data, many=True)
+            serializer = LawFirmListSerializer(lawfirm, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message" : "Lawfirm details updated sucessfully"},status=status.HTTP_200_OK)

@@ -14,5 +14,5 @@ urlpatterns = [
 
 
    path("create-lawfirm/", LawFirmListView.as_view(), name = "LawFirmListView"),   #not in api
-
+   # path("count-lawfirm", LawfirmCountView.as_view(),  name= "LawfirmCountView"),
 ]

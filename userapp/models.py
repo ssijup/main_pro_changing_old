@@ -33,14 +33,13 @@ class UserData(AbstractUser):
     objects = UserManager()  
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 USER_CHOICES = (
     ('normal_advocate', 'Normal Advocate'),
     ('normal_admin', 'Normal Admin'),
     ('super_admin', 'Super Admin'),
-    ('registrar', 'Registrar'),
 )    
 
 class Advocate(models.Model):
@@ -60,7 +59,7 @@ class Advocate(models.Model):
 class Registrar(models.Model):
     user = models.ForeignKey(UserData,on_delete=models.CASCADE)
     court=models.ForeignKey(Court,on_delete=models.CASCADE)
-    date_of_birth = models.DateField(default='9999-99-99')
+    date_of_birth = models.DateField(default='2000-01-01')
     phone=models.CharField(max_length=200)
     address=models.CharField(max_length=200,default='not given')
     profile_image=models.ImageField(upload_to='media/', null=True, blank=True)

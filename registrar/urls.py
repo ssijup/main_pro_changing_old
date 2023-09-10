@@ -9,6 +9,6 @@ urlpatterns = [
     path("list-registrar", RegistrarView.as_view(), name = "RegistrarView"),  
     path("edit-registrar/<id>", EditRegistrarView.as_view(), name = "EditRegistrarView"),  
     path("delete-registrar/<id>", DeleteRegistrarView.as_view(), name = "DeleteRegistrarView"),  
-    path("create-registrar", CreateRegistrarView.as_view(), name = "CreateRegistrarView"),
+    path("create-registrar/<court_id>", CreateRegistrarView.as_view(), name = "CreateRegistrarView"),
     path("editform-registrar/<id>",EditFormViewRegistrarView.as_view(),name='EditFormViewRegistrarView')
 ]

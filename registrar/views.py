@@ -4,7 +4,8 @@ from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
 from .serializer import RegistrarSerializer
-from userapp.models import Registrar
+from userapp.models import Registrar,UserData
+from association.models import Court
 
 
 class RegistrarView(APIView):
@@ -14,12 +15,24 @@ class RegistrarView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateRegistrarView(APIView):
-    def post(self, request):
-        serializer = RegistrarSerializer(data=request.data)
+    def post(self, request, court_id):      
+        email = request.data.get('email')
+        password = request.data.get('password')
+        name = request.data.get('name')
+        try:
+            court = Court.objects.get(id=court_id)
+            print("yyyy",court.id)
+        except Court.DoesNotExist:
+             return Response({"message" :"Court could not be found"})
+        user = UserData.objects.create_user(email=email, password=password,name=name)
+        data = request.data.copy()
+        data['user_id'] = user.id
+        data['court_id'] = court_id
+        serializer = RegistrarSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+            return Response({" message": "Registrar successfully created"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "validation failed"}, status=status.HTTP_400_BAD_REQUEST) 
 
     
 class DeleteRegistrarView(APIView):
@@ -35,14 +48,18 @@ class EditRegistrarView(APIView):
     def patch(self, request, id):
         try:
             registrar = Registrar.objects.get(id=id)
+            print("uuuuuuuuuuuu",registrar)
         except Registrar.DoesNotExist:
-            return Response({"error": "Registrar not found"}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({"message": "Registrar could not be found"}, status=status.HTTP_404_NOT_FOUND)
+        new_name = request.data.get('name')
+        if new_name:
+            registrar.user.name = new_name
+            registrar.save()
         serializer = RegistrarSerializer(registrar, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Validation failed... Please try again"}, status=status.HTTP_400_BAD_REQUEST)
     
 class EditFormViewRegistrarView(APIView):
     def get(self, request, id) :

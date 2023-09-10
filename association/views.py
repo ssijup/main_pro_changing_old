@@ -8,7 +8,7 @@ from rest_framework import status
 from django.utils import timezone
 
 from .serializer import AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,ListNormalAdminSerializer, ListSuperAdminSerializer
-from .models import Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, MembershipPlan,MembershipFineAmount,Notification
+from .models import Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation
 from advocates.serializer import NormalAdvocateSerializer
 from userapp.models import Advocate, UserData
 
@@ -51,7 +51,7 @@ class EditCourtView(APIView):
     def patch(self, request, id):
         try:
             court=Court.objects.get(id=id)
-            serializer = CourtListSerializer(court, data=request.data, many=True)
+            serializer = CourtListSerializer(court, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message" : "Court details updated sucessfully"},status=status.HTTP_200_OK)
@@ -79,8 +79,7 @@ class AssociationListView(APIView):
 
         except serializers.ValidationError:  
             return Response({
-                "message": "Validation failed",
-                "errors": serializer.errors
+                "message": "Validation failed"
             }, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
@@ -94,7 +93,7 @@ class EditAssociationView(APIView):
     def patch(self, request, id):
         try:
             association=Association.objects.get(id=id)
-            serializer = AssociationListSerializer(association, data=request.data, many=True)
+            serializer = AssociationListSerializer(association, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"message" : "Association details updated sucessfully"},status=status.HTTP_200_OK)
@@ -312,6 +311,11 @@ class ToggleMembershipFineAmountView(APIView):
         except Exception as e:
                     return Response({"message" : "An unexcepted error occured "+str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+class NotificationGetView(APIView):
+    def get(self, request):
+        notification=Notification.objects.all()
+        serializer=NotificationSerializer(notification,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 class NotificationView(APIView):
@@ -335,10 +339,7 @@ class NotificationView(APIView):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-    def get(self, request):
-        notification=Notification.objects.all()
-        serializer=NotificationSerializer(notification,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+
     
     def patch(self, request, id):
         try:
@@ -382,12 +383,14 @@ class MembershipPaymentView(APIView):
             return Response({"message" : "Incorrect date format"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-    def post(self ,request):
+    def post(self ,request,user_id,plan_id,association_id):
         user_id = request.data.get('user_id')
         plan_id = request.data.get('plan_id')
-        if user_id is None or plan_id is None:
+        association_id = request.data.get('association_id')
+        if user_id is None or plan_id is None or association_id is None:
             return Response({"message" : "In valid request, the user id or plan id is missing"})
         try :
+            association_data = Association.objects.get(id = association_id)
             user_data = Advocate.objects.get(id = user_id)
             plan_data = MembershipPlan.objects.get(id = plan_id)
             fine_amount_obj = MembershipFineAmount.objects.filter().order_by('-id').first()
@@ -421,7 +424,8 @@ class MembershipPaymentView(APIView):
                     payment_requested_user = user_data,
                     payment_requested_plan = plan_data,
                     payment_expiry_date = payment_expiry_date,
-                    payment_total_amount_paid = membership_total_amount
+                    payment_total_amount_paid = membership_total_amount,
+                    payment_association = association_data
                 )
                 payment_request_url = response['payment_request']['longurl']
 
@@ -434,7 +438,7 @@ class MembershipPaymentView(APIView):
         except MembershipFineAmount.DoesNotExist:
             return Response({"message": "MembershipFine does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({"message": "Something went wrong: "+str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"message": "Something went wrong: "}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request):
         membershiplist=AssociationMembershipPayment.objects.all()
@@ -455,6 +459,7 @@ class Paymentsucessfull(APIView):
         user_data = payment_requested_user.payment_requested_user
         payment_expiry_date = payment_requested_user.payment_expiry_date
         membership_total_amount = payment_requested_user.payment_total_amount_paid
+        association_data = payment_requested_user.payment_association
         response = api.payment_request_payment_status(payment_requested_id_in_request, payment_id)
         
         print(response,"siju")
@@ -466,8 +471,13 @@ class Paymentsucessfull(APIView):
                     payment_id = response['payment_request']['id'],
                     payment_status = True,
                     payment_expiry_date = payment_expiry_date,
-                    payment_total_amount_paid = membership_total_amount
+                    payment_total_amount_paid = membership_total_amount,
+                    payment_association = association_data
                     )
+                AdvocateAssociation.objects.create(
+                    advocate = user_data,
+                    association = association_data,
+                    advocate_status = True)
                 print(membership_total_amount)
                 return Response( {"message" : "Payment sucessfull"} ,status = status.HTTP_200_OK)
             return Response({"message" : "Payment request intiated but didn't debited the amount (payment status : pending)"} ,status = status.HTTP_402_PAYMENT_REQUIRED)
