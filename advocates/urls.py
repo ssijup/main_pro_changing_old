@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import AdvocatesListView, SuspendAdvocateView, EditAdvocateProfileView,CreateAdvocatesListView,AdvocateEditFormView 
+from .views import ( AdvocatesListView, SuspendAdvocateView, EditAdvocateProfileView,
+                    CreateAdvocatesListView,AdvocateEditFormView )
 
 urlpatterns = [
    path("list", AdvocatesListView.as_view(), name = "AdvocatesListView"),

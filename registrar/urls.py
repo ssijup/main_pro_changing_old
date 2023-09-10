@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import RegistrarView, CreateRegistrarView, DeleteRegistrarView, EditRegistrarView, EditFormViewRegistrarView
+from .views import ( RegistrarView, CreateRegistrarView, DeleteRegistrarView, EditRegistrarView, 
+                    EditFormViewRegistrarView )
 
 
 urlpatterns = [

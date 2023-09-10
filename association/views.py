@@ -7,8 +7,12 @@ from django.shortcuts import render
 from rest_framework import status
 from django.utils import timezone
 
-from .serializer import AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,ListNormalAdminSerializer, ListSuperAdminSerializer
-from .models import Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation
+from .serializer import ( AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,
+                         NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,
+                         ListNormalAdminSerializer, ListSuperAdminSerializer )
+from .models import ( Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, 
+                     MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation,
+                      AssociationSuperAdmin )
 from advocates.serializer import NormalAdvocateSerializer
 from userapp.models import Advocate, UserData
 
@@ -182,12 +186,18 @@ class DeleteNormalAdminView(APIView):
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
+# class SuperAdminView(APIView):
+#     def get(self, request):
+#         super_admin = Advocate.objects.filter(type_of_user='super_admin')
+#         serializer = ListNormalAdminSerializer(super_admin, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
 class SuperAdminView(APIView):
     def get(self, request):
-        super_admin = Advocate.objects.filter(type_of_user='super_admin')
-        serializer = ListNormalAdminSerializer(super_admin, many=True)
+        super_admin = AssociationSuperAdmin.objects.all()
+        serializer = ListSuperAdminSerializer(super_admin, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
 class CreateSuperAdminView(APIView):
     def post(self, request, id):
         try:
@@ -195,26 +205,55 @@ class CreateSuperAdminView(APIView):
         except UserData.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         try:
-            advocate = Advocate.objects.get(user=user, type_of_user='super_admin')
+            super_admin = AssociationSuperAdmin.objects.get(user=user)
             return Response({"error": "Role already exists"}, status=status.HTTP_400_BAD_REQUEST)
-        except Advocate.DoesNotExist:
+        except AssociationSuperAdmin.DoesNotExist:
             request.data['user'] = user.id
             request.data['type_of_user'] = 'super_admin'
             serializer = ListSuperAdminSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(user=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
-    
+
+# class CreateSuperAdminView(APIView):
+#     def post(self, request, id):
+#         try:
+#             user = UserData.objects.get(id=id)
+#         except UserData.DoesNotExist:
+#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#         try:
+#             advocate = Advocate.objects.get(user=user, type_of_user='super_admin')
+#             return Response({"error": "Role already exists"}, status=status.HTTP_400_BAD_REQUEST)
+#         except Advocate.DoesNotExist:
+#             request.data['user'] = user.id
+#             request.data['type_of_user'] = 'super_admin'
+#             serializer = ListSuperAdminSerializer(data=request.data)
+#             if serializer.is_valid():
+#                 serializer.save(user=user)
+#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+
+
 class DeleteSuperAdminView(APIView):
     def delete(self, request, id):
         try:
-            super_admin = Advocate.objects.get(user__id=id,type_of_user='super_admin')
-        except Advocate.DoesNotExist:
+            super_admin = AssociationSuperAdmin.objects.get(user__id=id)
+        except AssociationSuperAdmin.DoesNotExist:
             return Response({"message": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
         super_admin.delete()
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+# class DeleteSuperAdminView(APIView):
+#     def delete(self, request, id):
+#         try:
+#             super_admin = Advocate.objects.get(user__id=id,type_of_user='super_admin')
+#         except Advocate.DoesNotExist:
+#             return Response({"message": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+#         super_admin.delete()
+#         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
         

@@ -1,8 +1,10 @@
 from rest_framework import serializers
 
-from .models import Association, Jurisdiction ,Court, MembershipPlan, MembershipFineAmount, Notification, AssociationMembershipPayment
+from .models import (Association, Jurisdiction ,Court, MembershipPlan, MembershipFineAmount, 
+                     Notification, AssociationMembershipPayment )
 from userapp.models import Advocate
 from advocates.serializer import UserSerializer
+from .models import AssociationSuperAdmin
 
 
 
@@ -31,13 +33,9 @@ class ListNormalAdminSerializer(serializers.ModelSerializer):
 class ListSuperAdminSerializer(serializers.ModelSerializer):
     user = UserSerializer() 
     class Meta:
-        model = Advocate
+        model = AssociationSuperAdmin
         fields = "__all__"
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        if data.get('type_of_user') == 'super_admin':
-            return data
-        return None
+ 
 
 class MembershipPlanSerializer(serializers.ModelSerializer):
     class Meta:
