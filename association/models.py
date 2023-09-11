@@ -27,6 +27,8 @@ class Association(models.Model):
     contact_no=models.CharField(max_length=200)
     email=models.EmailField()
     is_suspend=models.BooleanField(default=False)
+    def __str__(self): 
+        return self.name
 
 
 class MembershipPlan(models.Model):
