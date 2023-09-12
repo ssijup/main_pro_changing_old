@@ -22,3 +22,8 @@ class LawfirmAdmin(models.Model):
     is_owner = models.BooleanField(default=False)
     def __str__(self): 
         return self.user.email
+    
+class AdvocateLawfirm(models.Model):
+    advocate = models.ForeignKey('userapp.Advocate',on_delete=models.CASCADE)
+    advocate_status = models.BooleanField(default=False)
+    lawfirm = models.ForeignKey(LawFirm,on_delete=models.CASCADE)

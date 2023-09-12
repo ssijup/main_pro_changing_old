@@ -76,8 +76,13 @@ class EditFormViewRegistrarView(APIView):
                     return Response({
                         "message": "An unexpected error occurred "
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
 
+class RegistrarCountView(APIView):
+    def get(self, request):
+        registar_count = Registrar.objects.count()
+        return Response({'registar_count': registar_count}, status=status.HTTP_200_OK)
 
 
  

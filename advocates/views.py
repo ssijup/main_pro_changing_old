@@ -5,6 +5,10 @@ from rest_framework import status
 from .serializer import NormalAdvocateSerializer
 from rest_framework import serializers
 from userapp.models import Advocate,UserData
+from association.models import AssociationMembershipPayment, AdvocateAssociation
+from lawfirm.models import AdvocateLawfirm
+from association.serializer import AdvocateAssociationSerializer
+from lawfirm.serializer import AdvocateLawfirmSerializer
 
 class AdvocatesListView(APIView):
     def get(self, request):
@@ -100,3 +104,38 @@ class AdvocateEditFormView(APIView):
                     return Response({
                         "message": "An unexpected error occurred "  
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class AdvocatesPaymentView(APIView):
+    def get(self, request,id):
+        advocate = AssociationMembershipPayment.objects.filter(for_user_details__id=id)
+        serializer = NormalAdvocateSerializer(advocate, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AssociationAdvocateView(APIView):
+    def get(self, request,id):
+        association = AdvocateAssociation.objects.filter(advocate__id=id)
+        serializer = AdvocateAssociationSerializer(association, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class AdvocateLawFirmListView(APIView):
+    def get(self, request, id):
+        advocates = AdvocateLawfirm.objects.filter(lawfirm__id=id)
+        serializer = AdvocateLawfirmSerializer(advocates, many = True)
+        return Response(serializer.data,status= status.HTTP_200_OK)
+    
+class DeleteAdvocateLawFirmView(APIView):
+    def delete(self, request, id):
+        try:
+            advocates=AdvocateLawfirm.objects.get(lawfirm__id=id)
+            advocates.delete()
+            return Response({"message" : "LawFirm deleted sucessfully"})
+        
+        except AdvocateLawfirm.DoesNotExist:
+            return Response({"message" : "The LawFirm cout not be found"})
+        except Exception as e:
+            return Response({
+                "message": "An unexpected error occurred",
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    

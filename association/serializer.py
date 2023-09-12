@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import (Association, Jurisdiction ,Court, MembershipPlan, MembershipFineAmount, 
-                     Notification, AssociationMembershipPayment )
+                     Notification, AssociationMembershipPayment, AdvocateAssociation )
 from userapp.models import Advocate
 from advocates.serializer import UserSerializer
 from .models import AssociationSuperAdmin
@@ -57,4 +57,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 class AssociationMembershipPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model=AssociationMembershipPayment
+        fields="__all__"
+
+
+class AdvocateAssociationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=AdvocateAssociation
         fields="__all__"

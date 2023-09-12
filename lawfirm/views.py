@@ -4,8 +4,8 @@ from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
 
-from .serializer import LawFirmListSerializer
-from .models import LawFirm
+from .serializer import LawFirmListSerializer, AdvocateLawfirmSerializer
+from .models import LawFirm, AdvocateLawfirm
 
 
 
@@ -108,3 +108,24 @@ class LawfirmCountView(APIView):
     def get(self, request):
         lawfirm_count = LawFirm.objects.count()
         return Response({'lawfirm_count': lawfirm_count}, status=status.HTTP_200_OK)
+    
+
+class LawFirmAdvocateListView(APIView):
+    def get(self, request, id):
+        advocate = AdvocateLawfirm.objects.filter(advocate__id=id)
+        serializer = AdvocateLawfirmSerializer(advocate, many = True)
+        return Response(serializer.data,status= status.HTTP_200_OK)
+    
+class DeleteLawFirmAdvocateView(APIView):
+    def delete(self, request, id):
+        try:
+            lawfirm=AdvocateLawfirm.objects.get(id=id)
+            lawfirm.delete()
+            return Response({"message" : "LawFirm deleted sucessfully"})
+        
+        except AdvocateLawfirm.DoesNotExist:
+            return Response({"message" : "The LawFirm cout not be found"})
+        except Exception as e:
+            return Response({
+                "message": "An unexpected error occurred",
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

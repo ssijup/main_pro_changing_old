@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from .views import (LawFirmListView,LawfirmEditFormView, SuspendLawFirmView,EditLawfirmView, DeletelawFirmView,
-                     LawfirmCountView)
+                     LawfirmCountView, LawFirmAdvocateListView, DeleteLawFirmAdvocateView)
 
 
 urlpatterns = [
@@ -13,4 +13,9 @@ urlpatterns = [
    path("editform-lawfirm/<id>", LawfirmEditFormView.as_view(),  name= "LawfirmEditFormView"),
    path("create-lawfirm/", LawFirmListView.as_view(), name = "LawFirmListView"),   #not in api
    path("count", LawfirmCountView.as_view(),  name= "LawfirmCountView"),
+
+   path("list/<advocate_id>", LawFirmAdvocateListView.as_view(),  name= "LawFirmAdvocateListView"),
+   path("delete/<advocate_id>", DeleteLawFirmAdvocateView.as_view(),  name= "DeleteAdvocateLawFirmView"),
+
+
 ]

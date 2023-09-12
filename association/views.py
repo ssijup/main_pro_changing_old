@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from .serializer import ( AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,
                          NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,
-                         ListNormalAdminSerializer, ListSuperAdminSerializer )
+                         ListNormalAdminSerializer, ListSuperAdminSerializer, AdvocateAssociationSerializer )
 from .models import ( Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, 
                      MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation,
                       AssociationSuperAdmin )
@@ -577,4 +577,15 @@ class AssociationCountView(APIView):
     def get(self, request):
         association_count = Association.objects.count()
         return Response({'association_count': association_count}, status=status.HTTP_200_OK)
+    
+class AssociationPaymentView(APIView):
+    def get(self, request,id):
+        association = AssociationMembershipPayment.objects.filter(payment_association__id=id)
+        serializer = AssociationListSerializer(association, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+class AssociationAdvocatesView(APIView):
+    def get(self, request,id):
+        advocates = AdvocateAssociation.objects.filter(association__id=id)
+        serializer = AdvocateAssociationSerializer(advocates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

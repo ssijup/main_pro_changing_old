@@ -7,7 +7,7 @@ from .views import ( AssociationListView,CourtListView, SuspendAssociationView,N
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
                     DeleteNormalAdminView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
-                     CourtCountView, AssociationCountView )
+                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView)
 
 
 urlpatterns = [
@@ -63,5 +63,10 @@ urlpatterns = [
    path("notification/create/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("notification/delete/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("editform-notification/<id>",NotificationEditFormView.as_view() ,name="NotificationEditFormView"),
+
+   path("payments/<association_id>",AssociationPaymentView.as_view() ,name="AssociationPaymentView"),
+
+   # AssociationAdvocatesView
+   path("list/<advocate_id>",AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
  
 ]
