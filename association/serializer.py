@@ -14,6 +14,8 @@ class CourtListSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class AssociationListSerializer(serializers.ModelSerializer):
+    court = CourtListSerializer(read_only=True) 
+    court_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Court.objects.all(), source='court')
     class Meta:
         model = Association
         fields = "__all__"
@@ -38,11 +40,15 @@ class ListSuperAdminSerializer(serializers.ModelSerializer):
  
 
 class MembershipPlanSerializer(serializers.ModelSerializer):
+    association = AssociationListSerializer(read_only=True) 
+    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Court.objects.all(), source='association')
     class Meta:
         model = MembershipPlan
         fields = "__all__"
 
 class MembershipFineAmountSerializer(serializers.ModelSerializer):
+    association = AssociationListSerializer(read_only=True) 
+    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Court.objects.all(), source='association')
     class Meta:
         model = MembershipFineAmount
         fields = "__all__"

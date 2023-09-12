@@ -1,3 +1,61 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import serializers
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+from .models import NetmagicsAdmin
+from userapp.models import UserData
+from .serializer import NetmagicsAdminSerializer
+from association.permissions import IsAuthenticatedNetmagicsAdmin, DeleteIsAuthenticatedNetmagicsAdmin
+
+
+class NetmagicsAdminCreateView(APIView):
+    def post(self , request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        name = request.data.get('name')
+        user = UserData.objects.create_user(email=email, password=password, name=name)
+
+        data = request.data.copy()  
+        data['user_id'] = user.id
+        serializer = NetmagicsAdminSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "successfully created", "data": serializer.data}, status=status.HTTP_201_CREATED)
+
+        return Response({"message": "validation failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ListNetmagicsAdmin(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
+    def get(self, request):
+        user=request.user
+        print("sijuuuuuuuuuuu :", user)
+        val = NetmagicsAdmin.objects.get(user=user)
+        print(val ,"tttttttttttt")
+        admins = NetmagicsAdmin.objects.all()
+        serializer = NetmagicsAdminSerializer(admins, many =True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+class DeleteNetmagicsAdmin(APIView):
+    permission_classes = [DeleteIsAuthenticatedNetmagicsAdmin]
+
+    def delete(self, request, id):
+        try:
+            admin=NetmagicsAdmin.objects.get(id=id)
+            admin.delete()
+            return Response({"message" : "Admin Removed successfully"})
+        
+        except NetmagicsAdmin.DoesNotExist:
+            return Response({"message" : "Admin could not be found"})
+        except Exception as e:
+            return Response({
+                "message": "An unexpected error occurred .Please try again later"
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+

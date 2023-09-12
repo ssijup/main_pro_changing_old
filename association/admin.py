@@ -1,5 +1,5 @@
 from .models import ( Court,Jurisdiction,Association,AssociationMembershipPayment,AssociationPaymentRequest, 
-                     Notification,MembershipFineAmount,MembershipPlan, AssociationSuperAdmin )
+                     Notification,AdvocateAssociation,MembershipFineAmount,MembershipFineAmount,MembershipPlan, AssociationSuperAdmin )
 from django.contrib import admin
 
 # Register your models here.
@@ -13,4 +13,6 @@ admin.site.register(Notification)
 admin.site.register(MembershipFineAmount)
 admin.site.register(MembershipPlan)
 admin.site.register(AssociationSuperAdmin)
+admin.site.register(AdvocateAssociation)
+
 

@@ -11,4 +11,6 @@ urlpatterns = [
     path('lawfirm/', include('lawfirm.urls')),
     path('registrar/', include('registrar.urls')),
     path('association/', include('association.urls')),
+    path('netmagics/', include('netmagics.urls')),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

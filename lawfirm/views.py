@@ -1,9 +1,12 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
 
+from association.permissions import IsAuthenticatedNetmagicsAdmin
+from .permissions import IsAuthenticatedLawfirmAdmin
 from .serializer import LawFirmListSerializer
 from .models import LawFirm
 
@@ -11,6 +14,8 @@ from .models import LawFirm
 
 
 class LawFirmListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
     def get(self, request):
         lawfirm = LawFirm.objects.all()
         serializer = LawFirmListSerializer(lawfirm, many = True)
@@ -37,6 +42,8 @@ class LawFirmListView(APIView):
         
 
 class SuspendLawFirmView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def patch(self, request, id):
         try :
             lawfirm = LawFirm.objects.get(id = id)
@@ -61,6 +68,8 @@ class SuspendLawFirmView(APIView):
 
 
 class DeletelawFirmView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def delete(self, request, id):
         try:
             lawfirm=LawFirm.objects.get(id=id)
@@ -76,6 +85,8 @@ class DeletelawFirmView(APIView):
 
 
 class EditLawfirmView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedLawfirmAdmin]
+
     def patch(self, request, id):
         try:
             lawfirm=LawFirm.objects.get(id=id)
@@ -88,6 +99,7 @@ class EditLawfirmView(APIView):
             return Response({"message" : "Lawfirm could not be found"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"message" : "An unexcepted error occured "},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         
 class LawfirmEditFormView(APIView):
     def get(self, request, id) :

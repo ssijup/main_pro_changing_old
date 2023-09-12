@@ -2,11 +2,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+from association.permissions import IsAuthenticatedNetmagicsAdmin, IsAuthenticatedAssociationAdmin
 from .serializer import NormalAdvocateSerializer
+from lawfirm.permissions import IsAuthenticatedLawfirmAdmin
+from .permissions import IsAuthenticatedAdvocate
 from rest_framework import serializers
 from userapp.models import Advocate,UserData
 
 class AdvocatesListView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         normal_advocate = Advocate.objects.filter(type_of_user='normal_advocate')
         serializer = NormalAdvocateSerializer(normal_advocate, many=True)
@@ -30,11 +37,13 @@ class CreateAdvocatesListView(APIView):
             serializer.save()
             return Response({"message": "successfully created", "data": serializer.data}, status=status.HTTP_201_CREATED)
 
-        return Response({"error": "validation failed", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "validation failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 class SuspendAdvocateView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin | IsAuthenticatedLawfirmAdmin]
+
     def patch(self, request, id):
         try :
             advocate = Advocate.objects.get(id = id)
@@ -61,6 +70,8 @@ class SuspendAdvocateView(APIView):
     
 
 class EditAdvocateProfileView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAdvocate]
+
     def patch(self, request, id): 
         try:
             advocate=Advocate.objects.get(id=id) 
