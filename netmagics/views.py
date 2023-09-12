@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import NetmagicsAdmin
 from userapp.models import UserData
+from netmagics.models import ActivityTracker
 from .serializer import NetmagicsAdminSerializer
 from association.permissions import IsAuthenticatedNetmagicsAdmin, DeleteIsAuthenticatedNetmagicsAdmin
 from .serializer import ActivityTrackerSerializer

@@ -13,7 +13,4 @@ urlpatterns = [
     path('test_api_for_authr',TestapiForAuthr.as_view(),name='TestapiForAuthr'),
 
 
-    path('test_api_for_authr',TestapiForAuthr.as_view(),name='TestapiForAuthr'),
-
-
 ]
