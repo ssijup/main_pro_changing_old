@@ -568,5 +568,13 @@ class NotificationEditFormView(APIView):
                         "message": "An unexpected error occurred "
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+class CourtCountView(APIView):
+    def get(self, request):
+        court_count = Court.objects.count()
+        return Response({'court_count': court_count}, status=status.HTTP_200_OK)
+    
+class AssociationCountView(APIView):
+    def get(self, request):
+        association_count = Association.objects.count()
+        return Response({'association_count': association_count}, status=status.HTTP_200_OK)
 

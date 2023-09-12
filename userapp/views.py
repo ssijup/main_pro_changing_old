@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import UserData
+from .models import UserData, Advocate
 from rest_framework import status
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -30,3 +30,8 @@ class PasswordChangeView(APIView):
             else:
                 return Response({'error': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AdvocatesCountView(APIView):
+    def get(self, request):
+        advocates_count = Advocate.objects.count()
+        return Response({'advocates_count': advocates_count}, status=status.HTTP_200_OK)

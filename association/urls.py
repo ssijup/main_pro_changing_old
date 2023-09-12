@@ -6,7 +6,8 @@ from .views import ( AssociationListView,CourtListView, SuspendAssociationView,N
                     ToggleMembershipFineAmountView,ToggleMembershipPlanView, AssociationEditFormView,
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
-                    DeleteNormalAdminView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView )
+                    DeleteNormalAdminView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
+                     CourtCountView, AssociationCountView )
 
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
    path("court/edit-court/<id>", EditCourtView.as_view(), name = "EditCourtView"),
    path("court/delete-court/<id>", CourtListView.as_view(), name = "CourtListView"),
    path("court/editform-court/<id>", CourtEditFormView.as_view(), name = "CourtEditFormView"),
+   path("court/count/",CourtCountView.as_view(), name="CourtCountView"),
 
 
 #association
@@ -26,6 +28,7 @@ urlpatterns = [
    path('delete-association/<id>',DeleteAssociationView.as_view(),name="DeleteAssociationView"),
    path("editform-association/<id>",AssociationEditFormView.as_view() ,name="AssociationEditFormView"),
    path("suspend-association/<id>", SuspendAssociationView.as_view(), name = "SuspendAssociationView"),
+   path("count", AssociationCountView.as_view(),  name= "AssociationCountView"),
 
  #admins  
    path("association-normal-admin/list",NormalAdminView.as_view() ,name="NormalAdminView"),

@@ -102,3 +102,9 @@ class LawfirmEditFormView(APIView):
                     return Response({
                         "message": "An unexpected error occurred"
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class LawfirmCountView(APIView):
+    def get(self, request):
+        lawfirm_count = LawFirm.objects.count()
+        return Response({'lawfirm_count': lawfirm_count}, status=status.HTTP_200_OK)
