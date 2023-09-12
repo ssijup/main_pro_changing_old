@@ -6,6 +6,7 @@ from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
 from django.utils import timezone
+from rest_framework.permissions import IsAuthenticated
 
 from .serializer import ( AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,
                          NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,
@@ -14,6 +15,8 @@ from .models import ( Association, Court, Jurisdiction,AssociationMembershipPaym
                      MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation,
                       AssociationSuperAdmin )
 from advocates.serializer import NormalAdvocateSerializer
+from advocates.permissions import IsAuthenticatedAdvocate
+from .permissions import DeleteIsAuthenticatedAssociationAdmin, DeleteIsAuthenticatedNetmagicsAdmin,IsAuthenticatedAssociationAdmin,IsAuthenticatedRegistrar, IsAuthenticatedNetmagicsAdmin
 from userapp.models import Advocate, UserData
 
 from django.conf import settings
@@ -23,6 +26,8 @@ api = Instamojo(api_key=settings.API_KEY, auth_token=settings.AUTH_TOKEN, endpoi
 
 
 class CreateCourtView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+    
     def post(self, request):
         serializer = CourtListSerializer(data=request.data)
         if serializer.is_valid():
@@ -31,7 +36,9 @@ class CreateCourtView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CourtListView(APIView):
+class CourtListView(APIView): 
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def get(self, request):
         advocates = Court.objects.all()
         serializer = CourtListSerializer(advocates, many = True)
@@ -41,7 +48,7 @@ class CourtListView(APIView):
         try:
             court=Court.objects.get(id=id)
             court.delete()
-            return Response({"message" : "Court deleted sucessfully"})
+            return Response({"message" : "Court deleted successfully"})
         
         except Court.DoesNotExist:
             return Response({"message" : "The Court could not be found"})
@@ -52,6 +59,8 @@ class CourtListView(APIView):
     
 
 class EditCourtView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def patch(self, request, id):
         try:
             court=Court.objects.get(id=id)
@@ -68,13 +77,22 @@ class EditCourtView(APIView):
 
 
 class AssociationListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
     def get(self, request):
         advocates = Association.objects.all()
         serializer = AssociationListSerializer(advocates, many = True)
         return Response(serializer.data,status= status.HTTP_200_OK)
         
-    def post(self, request):
+    def post(self, request, id):
         data = request.data
+        try :
+            court =Court.objects.get(id= id)
+        except Court.DoesNotExist:
+             return Response({
+                    "message" : "Advocate could not be found"
+                    },status=status.HTTP_400_BAD_REQUEST)
+        data['court_id'] = id  
         serializer = AssociationListSerializer(data=data)
         try:
             if serializer.is_valid(raise_exception=True):
@@ -94,6 +112,8 @@ class AssociationListView(APIView):
 
 
 class EditAssociationView(APIView):
+    permission_classes = [IsAuthenticatedAssociationAdmin | IsAuthenticatedNetmagicsAdmin]
+
     def patch(self, request, id):
         try:
             association=Association.objects.get(id=id)
@@ -107,9 +127,11 @@ class EditAssociationView(APIView):
         except Exception as e:
             return Response({"message" : "An unexcepted error occured "},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
+# ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 class SuspendAssociationView(APIView):
+    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
+    
     def patch(self, request, id):
         try :
             association = Association.objects.get(id = id)
@@ -137,6 +159,8 @@ class SuspendAssociationView(APIView):
 
 
 class DeleteAssociationView(APIView):
+    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
+
     def delete(self, request, id):
         try:
             association=Association.objects.get(id=id)
@@ -191,14 +215,19 @@ class DeleteNormalAdminView(APIView):
 #         super_admin = Advocate.objects.filter(type_of_user='super_admin')
 #         serializer = ListNormalAdminSerializer(super_admin, many=True)
 #         return Response(serializer.data, status=status.HTTP_200_OK)
-
+ 
 class SuperAdminView(APIView):
+    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+
     def get(self, request):
         super_admin = AssociationSuperAdmin.objects.all()
         serializer = ListSuperAdminSerializer(super_admin, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
 class CreateSuperAdminView(APIView):
+    permission_classes = [  IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+
     def post(self, request, id):
         try:
             user = UserData.objects.get(id=id)
@@ -237,6 +266,8 @@ class CreateSuperAdminView(APIView):
 
 
 class DeleteSuperAdminView(APIView):
+    permission_classes =[DeleteIsAuthenticatedAssociationAdmin |IsAuthenticatedNetmagicsAdmin]
+    
     def delete(self, request, id):
         try:
             super_admin = AssociationSuperAdmin.objects.get(user__id=id)
@@ -260,25 +291,41 @@ class DeleteSuperAdminView(APIView):
 
             
 class MembershipPlanView(APIView):
-    def post(self ,request):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self ,request, id):
         data = request.data
+        try:
+            association = Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+        data['association_id'] = id
         serializer = MembershipPlanSerializer(data=data)
         if serializer.is_valid():
-            plan = serializer.validated_data['membership_plan']
+            plan = serializer.validated_data['duration']
             unit = serializer.validated_data['unit_of_plan']
-            if MembershipPlan.objects.filter(membership_plan = plan ,unit_of_plan = unit).exists() :
+            if MembershipPlan.objects.filter(duration = plan ,unit_of_plan = unit).exists() :
                 return Response({"message": "Plan already exits"} ,status =status.HTTP_409_CONFLICT)
             serializer.save()
             return Response({"message " : "Plan added sucesfully" ,'data' :serializer.data} ,status =status.HTTP_201_CREATED)
         return Response({"message" : " Error Invalid data " } ,serializer.errors)
-    
-    def get(self, request) :
-        data = MembershipPlan.objects.all()
+
+
+class MembershipGetView(APIView):
+
+    def get(self, request, id) :
+        try:
+            association = Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+        data = MembershipPlan.objects.filter(association = association)
         serializer = MembershipPlanSerializer(data ,many = True)
-        return Response({"data":serializer.data },status=status.HTTP_200_OK)
+        return Response(serializer.data ,status=status.HTTP_200_OK)
     
 
 class ToggleMembershipPlanView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    
     def patch(self, request, id):
         data=request.data
         try:
@@ -312,18 +359,21 @@ class ToggleMembershipPlanView(APIView):
 
 
 class ToggleMembershipFineAmountView(APIView):
-    def post(self, request):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+
+    def post(self, request, id):
         data= request.data
+        try:
+            association = Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+        data['association_id'] = id
         serializer=MembershipFineAmountSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message" : "Fine amount set sucessfully"},status=status.HTTP_201_CREATED)
         return Response({"message" : "Something went wrong"},status=status.HTTP_400_BAD_REQUEST)                                
 
-    def get(self, request):
-        data=MembershipFineAmount.objects.all()
-        serializer=MembershipFineAmountSerializer(data, many = True)
-        return Response({"data":serializer.data },status=status.HTTP_200_OK)
     
     def patch(self, request, id):
         data= request.data
@@ -350,7 +400,23 @@ class ToggleMembershipFineAmountView(APIView):
         except Exception as e:
                     return Response({"message" : "An unexcepted error occured "+str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+class MembershipFineGetView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            association = Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+        data = MembershipFineAmount.objects.filter(association = association)
+        serializer=MembershipFineAmountSerializer(data, many = True)
+        return Response(serializer.data ,status=status.HTTP_200_OK)
+
+
 class NotificationGetView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         notification=Notification.objects.all()
         serializer=NotificationSerializer(notification,many=True)
@@ -358,6 +424,8 @@ class NotificationGetView(APIView):
 
 
 class NotificationView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+
     def post(self, request, id ):
         data=request.data
         try:
@@ -378,7 +446,6 @@ class NotificationView(APIView):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-
     
     def patch(self, request, id):
         try:
@@ -396,6 +463,7 @@ class NotificationView(APIView):
                         "message": "An unexpected error occurred "+str(e) 
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
     def delete(self, request, id):
         try:
             notification = Notification.objects.get(id=id)
@@ -411,21 +479,21 @@ class NotificationView(APIView):
 
 
 class MembershipPaymentView(APIView):
+    # permission_classes = [ IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAdvocate]
+    
     def expiry_plan_calculation(request, plan_data):
         if plan_data.unit_of_plan == "month":
-            payment_expiry_date = datetime.now() + timedelta(days=30 * plan_data.membership_plan)
+            payment_expiry_date = datetime.now() + timedelta(days=30 * plan_data.duration)
             return payment_expiry_date
         elif plan_data.unit_of_plan == "year":
-            payment_expiry_date = datetime.now() + timedelta(days=365 * plan_data.membership_plan)
+            payment_expiry_date = datetime.now() + timedelta(days=365 * plan_data.duration)
             return payment_expiry_date
         else:
             return Response({"message" : "Incorrect date format"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
     def post(self ,request,user_id,plan_id,association_id):
-        user_id = request.data.get('user_id')
-        plan_id = request.data.get('plan_id')
-        association_id = request.data.get('association_id')
+     
         if user_id is None or plan_id is None or association_id is None:
             return Response({"message" : "In valid request, the user id or plan id is missing"})
         try :
@@ -444,17 +512,21 @@ class MembershipPaymentView(APIView):
                         months_passed = (timezone.now().year - user_last_payment.payment_expiry_date.year) * 12 + timezone.now().month - user_last_payment.payment_expiry_date.month
                         fine = months_passed * fine_amount
                         membership_total_amount = fine + int(plan_data.membership_price)
-                else :
-                    return Response({"message" : "Something went wrong"} ,status=status.HTTP_404_NOT_FOUND)
+                # else :
+                #     return Response({"message" : "Something went wrong"} ,status=status.HTTP_100_CONTINUE)
             payment_expiry_date =self.expiry_plan_calculation(plan_data)
+            print("jjjjjjjjjjjjjj")
             response = api.payment_request_create(
-             purpose= "Membership" ,
+            purpose= "Membership" ,
             amount =  membership_total_amount,
-            buyer_name = user_data.name ,
-            email= user_data.email ,
-            redirect_url= 'http://127.0.0.1:8000/Paymentsucessfull/'
+            buyer_name = user_data.user.name ,
+            email= user_data.user.email,
+            redirect_url= 'http://127.0.0.1:8000/association/Paymentsucessfull/'
             )
-            print(response['payment_request']['longurl'])
+
+            print("mmmmmmmmmmmmmmmmm",response)
+            # print(response['payment_request']['longurl'])
+
 
             print(response ,"payment")
             if response['success'] == True :
@@ -477,16 +549,15 @@ class MembershipPaymentView(APIView):
         except MembershipFineAmount.DoesNotExist:
             return Response({"message": "MembershipFine does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({"message": "Something went wrong: "}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print("oooooooooooooooovvvv"+str(e))
 
-    def get(self, request):
-        membershiplist=AssociationMembershipPayment.objects.all()
-        serializer=AssociationMembershipPaymentSerializer(membershiplist,many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+            return Response({"message": "Something went wrong: "+str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class Paymentsucessfull(APIView):
+    # permission_classes = [ IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAdvocate]
+
     def get(self ,request):
         payment_requested_id_in_request = request.GET.get("payment_request_id")
         payment_id = request.GET.get('payment_id')
@@ -502,7 +573,7 @@ class Paymentsucessfull(APIView):
         response = api.payment_request_payment_status(payment_requested_id_in_request, payment_id)
         
         print(response,"siju")
-        if response['success'] == True : 
+        if response['success'] == True :
             if response['payment_request']['status'] == 'Completed' and response['payment_request']['payment']['status'] == 'Credit' :
                 AssociationMembershipPayment.objects.create(
                     for_payment_plan = plan_data,
@@ -511,7 +582,8 @@ class Paymentsucessfull(APIView):
                     payment_status = True,
                     payment_expiry_date = payment_expiry_date,
                     payment_total_amount_paid = membership_total_amount,
-                    payment_association = association_data
+                    payment_association = association_data,
+                    payment_status_of_gateway = response['payment_request']['payment']['status']
                     )
                 AdvocateAssociation.objects.create(
                     advocate = user_data,
@@ -522,6 +594,18 @@ class Paymentsucessfull(APIView):
             return Response({"message" : "Payment request intiated but didn't debited the amount (payment status : pending)"} ,status = status.HTTP_402_PAYMENT_REQUIRED)
         return Response( {"message" : "Payment unsucessfull" } ,status = status.HTTP_402_PAYMENT_REQUIRED)
     
+
+
+class MembershipPaymentListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        membershiplist=AssociationMembershipPayment.objects.all()
+        serializer=AssociationMembershipPaymentSerializer(membershiplist,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
 class CourtEditFormView(APIView):
     def get(self, request, id) :
         try:
@@ -537,6 +621,7 @@ class CourtEditFormView(APIView):
             return Response({
                 "message": "An unexpected error occurred"       
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class AssociationEditFormView(APIView):
     def get(self, request, id) :

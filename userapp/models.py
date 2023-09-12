@@ -53,7 +53,7 @@ class Advocate(models.Model):
     document_image=models.ImageField(upload_to='media/', null=True, blank=True)
     is_suspend=models.BooleanField(default=False)
     type_of_user = models.CharField(max_length=255,choices=USER_CHOICES,default='normal_advocate')
-    def __str__(self): 
+    def __str__(self):
         return self.user.email+" , "+self.type_of_user
     
 class Registrar(models.Model):

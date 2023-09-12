@@ -7,14 +7,20 @@ from .serializer import RegistrarSerializer
 from userapp.models import Registrar,UserData
 from association.models import Court
 
+from association.permissions import IsAuthenticatedNetmagicsAdmin, IsAuthenticatedRegistrar
+
 
 class RegistrarView(APIView):
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def get(self, request):
         registrar = Registrar.objects.all()
         serializer = RegistrarSerializer(registrar, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateRegistrarView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def post(self, request, court_id):      
         email = request.data.get('email')
         password = request.data.get('password')
@@ -36,6 +42,8 @@ class CreateRegistrarView(APIView):
 
     
 class DeleteRegistrarView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
     def delete(self, request, id):
         try:
             registrar = Registrar.objects.get(id=id)
@@ -44,7 +52,10 @@ class DeleteRegistrarView(APIView):
         registrar.delete()
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
+
 class EditRegistrarView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedRegistrar]
+
     def patch(self, request, id):
         try:
             registrar = Registrar.objects.get(id=id)
@@ -60,6 +71,7 @@ class EditRegistrarView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"message": "Validation failed... Please try again"}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class EditFormViewRegistrarView(APIView):
     def get(self, request, id) :

@@ -2,19 +2,19 @@ from django.contrib import admin
 from django.urls import path, include
 
 from .views import ( AssociationListView,CourtListView, SuspendAssociationView,NotificationGetView,
-                    EditCourtView,MembershipPlanView,EditAssociationView,CourtEditFormView,
-                    ToggleMembershipFineAmountView,ToggleMembershipPlanView, AssociationEditFormView,
+                    EditCourtView,MembershipGetView,MembershipPlanView,EditAssociationView,CourtEditFormView,
+                    ToggleMembershipFineAmountView,Paymentsucessfull,ToggleMembershipPlanView, AssociationEditFormView,
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
-                    DeleteNormalAdminView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
-                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView)
+                    DeleteNormalAdminView,MembershipFineGetView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
+                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView,MembershipPaymentListView)
 
 
 urlpatterns = [
     
 #court
    path("court/list", CourtListView.as_view(), name = "CourtListView"),
-   path("court/create-court", CreateCourtView.as_view(), name = "CreateCourtView"),
+   path("court/create-court/<id>", CreateCourtView.as_view(), name = "CreateCourtView"),
    path("court/edit-court/<id>", EditCourtView.as_view(), name = "EditCourtView"),
    path("court/delete-court/<id>", CourtListView.as_view(), name = "CourtListView"),
    path("court/editform-court/<id>", CourtEditFormView.as_view(), name = "CourtEditFormView"),
@@ -40,22 +40,25 @@ urlpatterns = [
 
 
 #membership plan
-   path("membership-plan/list",MembershipPlanView.as_view(),name="MembershipPlanViews"),
-   path("membership-plan/create",MembershipPlanView.as_view(),name="MembershipPlanView"),
+   path("membership-plan/list/<id>",MembershipGetView.as_view(),name="MembershipGetView"),
+   path("membership-plan/create/<id>",MembershipPlanView.as_view(),name="MembershipPlanView"),
    path("membership-plan/edit/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
    path("membership-plan/delete/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
    path("membership-plan/editform/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
 
 
 #membership fine amount
-   path("fine-amount/create",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),
+   path("fine-amount/create/<id>",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),
    path("fine-amount/edit/<id>",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),
    path("fine-amount/delete/<id>",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),
-   path("fine-amount/list",ToggleMembershipFineAmountView.as_view(),name="ToggleMembershipFineAmountView"),  
+   path("fine-amount/list/<id>",MembershipFineGetView.as_view(),name="ToggleMembershipFineAmountView"),  
+
 
 #payment
+   path('Paymentsucessfull/', Paymentsucessfull.as_view(), name='paymentsucessfull'),
    path("membership-payment/create/<association_id>/<user_id>/<plan_id>",MembershipPaymentView.as_view() ,name="MembershipPaymentView"),
-   path("membership-payment/list",MembershipPaymentView.as_view() ,name="MembershipPaymentView"),
+   path("membership-payment/list",MembershipPaymentListView.as_view() ,name="MembershipPaymentListView"),
+
 
  #notification
    path("notification/list",NotificationGetView.as_view() ,name="NotificationGetView"),

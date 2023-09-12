@@ -11,6 +11,7 @@ class Court(models.Model):
     def __str__(self): 
         return self.name 
 
+
 class Jurisdiction(models.Model):
     name=models.CharField(max_length=200)
     area=models.CharField(max_length=200)
@@ -36,10 +37,15 @@ class MembershipPlan(models.Model):
     unit_of_plan = models.CharField(max_length=20)
     membership_price = models.CharField(max_length=10 ,default='1')
     association=models.ForeignKey(Association,on_delete=models.CASCADE,default='1')
+    def __str__(self):
+        return self.unit_of_plan
+
+
 
 class MembershipFineAmount(models.Model):
     fine_amount = models.IntegerField(default= 500)
     association=models.ForeignKey(Association,on_delete=models.CASCADE,default='1')
+
 
 class Notification(models.Model):
     association=models.ForeignKey(Association,on_delete=models.CASCADE, default=0)
@@ -73,6 +79,8 @@ class AdvocateAssociation(models.Model):
     advocate = models.ForeignKey('userapp.Advocate',on_delete=models.CASCADE)
     association = models.ForeignKey(Association,on_delete=models.SET_NULL,null=True,blank=True)
     advocate_status = models.BooleanField(default=False)
+
+
 
 
 class AssociationSuperAdmin(models.Model):
