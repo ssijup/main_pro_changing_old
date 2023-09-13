@@ -2,10 +2,10 @@ from rest_framework import serializers
 
 from .models import (Association, Jurisdiction ,Court, MembershipPlan, MembershipFineAmount, 
                      Notification, AssociationMembershipPayment, AdvocateAssociation )
-from userapp.models import Advocate
+from userapp.models import Advocate, UserData
 from advocates.serializer import UserSerializer
 from .models import AssociationSuperAdmin
-
+from association.models import Association
 
 
 class CourtListSerializer(serializers.ModelSerializer):
@@ -41,14 +41,14 @@ class ListSuperAdminSerializer(serializers.ModelSerializer):
 
 class MembershipPlanSerializer(serializers.ModelSerializer):
     association = AssociationListSerializer(read_only=True) 
-    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Court.objects.all(), source='association')
+    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Association.objects.all(), source='association')
     class Meta:
         model = MembershipPlan
         fields = "__all__"
 
 class MembershipFineAmountSerializer(serializers.ModelSerializer):
     association = AssociationListSerializer(read_only=True) 
-    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Court.objects.all(), source='association')
+    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Association.objects.all(), source='association')
     class Meta:
         model = MembershipFineAmount
         fields = "__all__"
@@ -70,3 +70,13 @@ class AdvocateAssociationSerializer(serializers.ModelSerializer):
     class Meta:
         model=AdvocateAssociation
         fields="__all__"
+
+
+class ListSuperAdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True) 
+    user_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=UserData.objects.all(), source='user')
+    association = AssociationListSerializer(read_only=True) 
+    association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Association.objects.all(), source='association')
+    class Meta:
+        model = AssociationSuperAdmin
+        fields = "__all__"

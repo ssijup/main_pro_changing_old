@@ -26,13 +26,10 @@ class LawFirmListView(APIView):
 class CreateLawFirmView(APIView):
     def post(self, request, user_id):
         data = request.data
-        # data['created_by']= user_id
-        advocate = Advocate.objects.get(id = user_id)
-
+        data['created_by']= user_id
         serializer = LawFirmListSerializer(data=data)
         try:
             if serializer.is_valid(raise_exception=True):
-                serializer.validated_data['created_by'] = advocate
                 serializer.save()
                 return Response({"message": "Lawfirm details created successfully"}, status=status.HTTP_201_CREATED)
 

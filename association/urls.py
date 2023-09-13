@@ -62,7 +62,7 @@ urlpatterns = [
 
 
  #notification
-   path("notification/list",NotificationGetView.as_view() ,name="NotificationGetView"),
+   path("notification/list/<id>",NotificationGetView.as_view() ,name="NotificationGetView"),
    path("notification/edit/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("notification/create/<id>",NotificationView.as_view() ,name="NotificationView"),
    path("notification/delete/<id>",NotificationView.as_view() ,name="NotificationView"),
@@ -71,6 +71,6 @@ urlpatterns = [
    path("payments/<association_id>",AssociationPaymentView.as_view() ,name="AssociationPaymentView"),
 
    # AssociationAdvocatesView
-   path("list/<advocate_id>",AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
+   path("list/<id>",AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
  
 ]

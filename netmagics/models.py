@@ -8,7 +8,7 @@ class NetmagicsAdmin(models.Model):
     profile_image=models.ImageField(upload_to='media/', null=True, blank=True) 
     is_owner = models.BooleanField(default=False)
     def __str__(self): 
-        return self.user.email 
+        return self.user.email+","+str(self.id)
     
 class ActivityTracker(models.Model):
     time = models.DateTimeField(auto_now_add=True)

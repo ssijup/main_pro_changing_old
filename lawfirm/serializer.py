@@ -12,7 +12,7 @@ class AdvocateLawfirmSerializer(serializers.ModelSerializer):
 
 class LawFirmListSerializer(serializers.ModelSerializer):
     # advocate = AdvocateLawfirmSerializer(read_only=True) 
-    # created_by = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Advocate.objects.all(), source='advocate')
+    created_by = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Advocate.objects.all())
     class Meta:
         model = LawFirm
         fields = "__all__"

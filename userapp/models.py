@@ -54,7 +54,7 @@ class Advocate(models.Model):
     is_suspend=models.BooleanField(default=False)
     type_of_user = models.CharField(max_length=255,choices=USER_CHOICES,default='normal_advocate')
     def __str__(self):
-        return self.user.email+" , "+self.type_of_user
+        return self.user.email+" , "+self.type_of_user +","+str(self.id)
     
 class Registrar(models.Model):
     user = models.ForeignKey(UserData,on_delete=models.CASCADE)
@@ -64,4 +64,4 @@ class Registrar(models.Model):
     address=models.CharField(max_length=200,default='not given')
     profile_image=models.ImageField(upload_to='media/', null=True, blank=True)
     def __str__(self): 
-        return self.user.email
+        return self.user.email + "," + str(self.id)

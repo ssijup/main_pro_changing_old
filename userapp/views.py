@@ -13,14 +13,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-class PasswordChangeView(APIView):
+class AdvocatePasswordChangeView(APIView):
     def post(self, request, id):
         serializer = PasswordChangeSerializer(data=request.data)
         if serializer.is_valid():
             # user = self.request.user
             try:
-                # advocate=Advocate.objects.get(id=id)
-                # user=advocate.user
+                advocate=Advocate.objects.get(id=id)
+                user=advocate.user
                 user=UserData.objects.get(id=id)
             except:
                  pass

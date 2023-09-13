@@ -35,7 +35,7 @@ class DeleteIsAuthenticatedNetmagicsAdmin(permissions.BasePermission):
         if not request.user.is_authenticated:
             return False
         # return hasattr(request.user, "netmagicsadmin") and request.user.netmagicsadmin.is_owner
-        return request.user.netmagicsadmin.filter(is_owner=True).exists()
+        return request.user.netmagicsadmin_set.filter(is_owner=True).exists()
 
 
 class DeleteIsAuthenticatedAssociationAdmin(permissions.BasePermission):

@@ -14,6 +14,7 @@ from association.models import AssociationMembershipPayment, AdvocateAssociation
 from lawfirm.models import AdvocateLawfirm
 from association.serializer import AdvocateAssociationSerializer
 from lawfirm.serializer import AdvocateLawfirmSerializer
+from association.serializer import AssociationMembershipPaymentSerializer
 
 class AdvocatesListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -120,7 +121,7 @@ class AdvocateEditFormView(APIView):
 class AdvocatesPaymentView(APIView):
     def get(self, request,id):
         advocate = AssociationMembershipPayment.objects.filter(for_user_details__id=id)
-        serializer = NormalAdvocateSerializer(advocate, many=True)
+        serializer = AssociationMembershipPaymentSerializer(advocate, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class AssociationAdvocateView(APIView):

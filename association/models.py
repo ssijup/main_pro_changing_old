@@ -37,14 +37,16 @@ class MembershipPlan(models.Model):
     unit_of_plan = models.CharField(max_length=20)
     membership_price = models.CharField(max_length=10 ,default='1')
     association=models.ForeignKey(Association,on_delete=models.CASCADE,default='1')
-    def __str__(self):
-        return self.unit_of_plan
+    def __str__(self): 
+        return self.membership_price + "," +str(self.id)
 
 
 
 class MembershipFineAmount(models.Model):
     fine_amount = models.IntegerField(default= 500)
     association=models.ForeignKey(Association,on_delete=models.CASCADE,default='1')
+    def __str__(self): 
+        return str(self.id)
 
 
 class Notification(models.Model):
@@ -64,6 +66,8 @@ class AssociationMembershipPayment(models.Model):
     payment_total_amount_paid = models.IntegerField(default=0)
     payment_status_of_gateway = models.CharField(max_length=25 ,default= 'failed')
     payment_association=models.ForeignKey(Association,on_delete=models.CASCADE, default=0)
+    def __str__(self): 
+        return str(self.id)
 
 
 class AssociationPaymentRequest(models.Model):
@@ -92,5 +96,5 @@ class AssociationSuperAdmin(models.Model):
     profile_image=models.ImageField(upload_to='media/', null=True, blank=True)
     is_owner = models.BooleanField(default=False)
     def __str__(self): 
-        return self.user.email
+        return self.user.email + "," +str(self.id)
 

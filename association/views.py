@@ -227,24 +227,25 @@ class SuperAdminView(APIView):
     
 
 class CreateSuperAdminView(APIView):
-    permission_classes = [  IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    # permission_classes = [  IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
     def post(self, request, id):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        name = request.data.get('name')
+        user = UserData.objects.create_user(email=email, password=password, name=name)
         try:
-            user = UserData.objects.get(id=id)
-        except UserData.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            super_admin = AssociationSuperAdmin.objects.get(user=user)
-            return Response({"error": "Role already exists"}, status=status.HTTP_400_BAD_REQUEST)
-        except AssociationSuperAdmin.DoesNotExist:
-            request.data['user'] = user.id
-            request.data['type_of_user'] = 'super_admin'
-            serializer = ListSuperAdminSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save(user=user)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+            association= Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_201_CREATED)
+        data = request.data.copy()  
+        data['user_id'] = user.id
+        data['association_id'] = association.id
+        serializer = ListSuperAdminSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"message" : "Validation failed","data" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class CreateSuperAdminView(APIView):
@@ -271,7 +272,7 @@ class DeleteSuperAdminView(APIView):
     
     def delete(self, request, id):
         try:
-            super_admin = AssociationSuperAdmin.objects.get(user__id=id)
+            super_admin = AssociationSuperAdmin.objects.get(id=id)
         except AssociationSuperAdmin.DoesNotExist:
             return Response({"message": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
         super_admin.delete()
@@ -418,8 +419,8 @@ class MembershipFineGetView(APIView):
 class NotificationGetView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        notification=Notification.objects.all()
+    def get(self, request, id):
+        notification=Notification.objects.filter(association__id = id)
         serializer=NotificationSerializer(notification,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -672,6 +673,6 @@ class AssociationPaymentView(APIView):
 
 class AssociationAdvocatesView(APIView):
     def get(self, request,id):
-        advocates = AdvocateAssociation.objects.filter(association__id=id)
+        advocates = AdvocateAssociation.objects.filter(advocate__id=id)
         serializer = AdvocateAssociationSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

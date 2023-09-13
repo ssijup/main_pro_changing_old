@@ -11,11 +11,11 @@ urlpatterns = [
    path("suspend-advocate/<id>", SuspendAdvocateView.as_view(), name = "SuspendAssociationView"),
    path("edit-advocate/<id>", EditAdvocateProfileView.as_view(), name = "EditAdvocateProfileView"),
    path("editform-advocate/<id>", AdvocateEditFormView.as_view(), name = "AdvocateEditFormView"),
-   path("payments/<advocate_id>", AdvocatesPaymentView.as_view(), name = "AdvocatesPaymentView"),
+   path("payments/<id>", AdvocatesPaymentView.as_view(), name = "AdvocatesPaymentView"),
 
-   path("list/<association_id>", AssociationAdvocateView.as_view(), name = "AssociationAdvocateView"),
+   path("list/<id>", AssociationAdvocateView.as_view(), name = "AssociationAdvocateView"),
 
-   path("list-advocates/<lawfirm_id>", AdvocateLawFirmListView.as_view(), name = "AdvocateLawFirmListView"),
+   path("list-advocates/<id>", AdvocateLawFirmListView.as_view(), name = "AdvocateLawFirmListView"),
    path("delete-advocates/<lawfirm_id>", DeleteAdvocateLawFirmView.as_view(), name = "DeleteAdvocateLawFirmView"),
 
 ]

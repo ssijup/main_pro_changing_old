@@ -45,6 +45,7 @@ class ListNetmagicsAdmin(APIView):
 
 class DeleteNetmagicsAdmin(APIView):
     permission_classes = [DeleteIsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def delete(self, request, id):
         try:
