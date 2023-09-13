@@ -221,9 +221,15 @@ class SuperAdminView(APIView):
     permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
     def get(self, request):
-        super_admin = AssociationSuperAdmin.objects.all()
+        user= request.user
+        auth_user = AssociationSuperAdmin.objects.get(user = user)
+        association = auth_user.association
+        if not association:
+            return Response({"message" : " No Associations found on this user"},status=status.HTTP_400_BAD_REQUEST)
+        super_admin = AssociationSuperAdmin.objects.filter(association = association)
         serializer = ListSuperAdminSerializer(super_admin, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
     
 
 class CreateSuperAdminView(APIView):
@@ -315,14 +321,33 @@ class MembershipPlanView(APIView):
 
 class MembershipGetView(APIView):
 
+    permission_classes = [IsAuthenticated]
+    def get(self, request) :
+        try:
+            user= request.user
+            auth_user = AssociationSuperAdmin.objects.get(user = user)
+            association = auth_user.association
+            # association = Association.objects.get(id = id)
+        except Association.DoesNotExist:
+            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+        data = MembershipPlan.objects.filter(association = association)
+        serializer = MembershipPlanSerializer(data ,many = True)
+        return Response(serializer.data ,status=status.HTTP_200_OK)
+    
+class MembershipGetViewUsingAssociationID(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, id) :
         try:
+            # user= request.user
+            # auth_user = AssociationSuperAdmin.objects.get(user = user)
+            # association = auth_user.association
             association = Association.objects.get(id = id)
         except Association.DoesNotExist:
             return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
         data = MembershipPlan.objects.filter(association = association)
         serializer = MembershipPlanSerializer(data ,many = True)
         return Response(serializer.data ,status=status.HTTP_200_OK)
+    
     
 
 class ToggleMembershipPlanView(APIView):
@@ -670,9 +695,18 @@ class AssociationPaymentView(APIView):
         association = AssociationMembershipPayment.objects.filter(payment_association__id=id)
         serializer = AssociationListSerializer(association, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
 class AssociationAdvocatesView(APIView):
-    def get(self, request,id):
-        advocates = AdvocateAssociation.objects.filter(advocate__id=id)
+    def get(self, request):
+        user= request.user
+        auth_user = AssociationSuperAdmin.objects.get(user = user)
+        association = auth_user.association
+        advocates = AdvocateAssociation.objects.filter(association__id=id)
+        serializer = AdvocateAssociationSerializer(advocates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AdvocatesViewUsingID(APIView):
+    def get(self, request, id):
+        advocates = AdvocateAssociation.objects.filter(association__id=id)
         serializer = AdvocateAssociationSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

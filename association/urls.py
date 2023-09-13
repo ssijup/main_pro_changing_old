@@ -8,7 +8,8 @@ from .views import ( AssociationListView,CourtListView, SuspendAssociationView,N
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
                     DeleteNormalAdminView,MembershipFineGetView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
                      CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView,
-                     MembershipPaymentListView, CreateAssociationView)
+                     MembershipPaymentListView, CreateAssociationView, AdvocatesViewUsingID,
+                     MembershipGetViewUsingAssociationID)
 
 
 urlpatterns = [
@@ -35,13 +36,16 @@ urlpatterns = [
    path("association-normal-admin/list",NormalAdminView.as_view() ,name="NormalAdminView"),
    path("association-normal-admin/create/<id>",CreateNormalAdminView.as_view() ,name="CreateNormalAdminView"),
    path("association-normal-admin/delete/<id>",DeleteNormalAdminView.as_view() ,name="DeleteNormalAdminView"),
-   path("association-super-admin/list",SuperAdminView.as_view() ,name="SuperAdminView"),
+   path("association-super-admin/list",SuperAdminView.as_view() ,name="SuperAdminView"), #made changes
    path("association-super-admin/create/<id>",CreateSuperAdminView.as_view() ,name="CreateSuperAdminView"),
    path("association-super-admin/delete/<id>",DeleteSuperAdminView.as_view() ,name="DeleteSuperAdminView"),
 
 
+
 #membership plan
-   path("membership-plan/list/<id>",MembershipGetView.as_view(),name="MembershipGetView"),
+   path("membership-plan/list",MembershipGetView.as_view(),name="MembershipGetView"),#made changes
+   path("membership-plan/list/<id>",MembershipGetViewUsingAssociationID.as_view(),name="MembershipGetViewUsingAssociationID"),
+
    path("membership-plan/create/<id>",MembershipPlanView.as_view(),name="MembershipPlanView"),
    path("membership-plan/edit/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
    path("membership-plan/delete/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
@@ -72,5 +76,9 @@ urlpatterns = [
 
    # AssociationAdvocatesView
    path("list/<id>",AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
+
+   # AssociationAdvocatesView
+   path("advocates/list", AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
+   path("advocates/list/<id>", AdvocatesViewUsingID.as_view() ,name="AdvocatesViewUsingID"),
  
 ]

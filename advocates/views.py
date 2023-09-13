@@ -124,9 +124,22 @@ class AdvocatesPaymentView(APIView):
         serializer = AssociationMembershipPaymentSerializer(advocate, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class AssociationAdvocateView(APIView):
+    
+class AssociationAdvocateViewUsingID(APIView):
     def get(self, request,id):
+        # user= request.user
+        # auth_user = AssociationSuperAdmin.objects.get(user = user)
+        # association = auth_user.association
         association = AdvocateAssociation.objects.filter(advocate__id=id)
+        serializer = AdvocateAssociationSerializer(association, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AssociationAdvocateView(APIView):
+    def get(self, request):
+        user= request.user
+        # auth_user = AssociationSuperAdmin.objects.get(user = user)
+        # association = auth_user.association
+        association = AdvocateAssociation.objects.filter(advocate__user=user)
         serializer = AdvocateAssociationSerializer(association, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -150,4 +163,18 @@ class DeleteAdvocateLawFirmView(APIView):
             return Response({
                 "message": "An unexpected error occurred",
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class AdvocateMembershipsViewUsingID(APIView):
+    def get(self, request,id):
+        payments = AssociationMembershipPayment.objects.get(for_user_details__user__id = id)
+        serializer = AssociationMembershipPaymentSerializer(payments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AdvocateMembershipsView(APIView):
+    def get(self, request):
+        user= request.user
+        payments = AssociationMembershipPayment.objects.get(for_user_details__user = user)
+        serializer = AssociationMembershipPaymentSerializer(payments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
