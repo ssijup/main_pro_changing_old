@@ -178,3 +178,14 @@ class AdvocateMembershipsView(APIView):
         serializer = AssociationMembershipPaymentSerializer(payments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class AdvocatesProfileView(APIView):
+    def get(self, request):
+        user= request.user
+        try:
+            advocate = Advocate.objects.get(user = user)
+        except:
+            pass
+    
+        serializer = NormalAdvocateSerializer(advocate, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

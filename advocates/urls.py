@@ -4,7 +4,7 @@ from django.urls import path, include
 from .views import ( AdvocatesListView, SuspendAdvocateView, EditAdvocateProfileView,
                     CreateAdvocatesListView,AdvocateEditFormView,AdvocatesPaymentView, AssociationAdvocateView,
                      AdvocateLawFirmListView, DeleteAdvocateLawFirmView, AssociationAdvocateViewUsingID,
-                      AdvocateMembershipsView, AdvocateMembershipsViewUsingID )
+                      AdvocateMembershipsView, AdvocateMembershipsViewUsingID, AdvocatesProfileView )
 
 urlpatterns = [
    path("list", AdvocatesListView.as_view(), name = "AdvocatesListView"),
@@ -27,5 +27,7 @@ urlpatterns = [
 
    path("membership/list", AdvocateMembershipsView.as_view(), name = "AssociationMembershipView"),
    path("membership/list/<id>", AdvocateMembershipsViewUsingID.as_view(), name = "AssociationMembershipViewUsingID"),   
+
+   path("profile", AdvocatesProfileView.as_view(), name = "AdvocatesListView"),
 
 ]
