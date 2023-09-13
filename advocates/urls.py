@@ -28,6 +28,6 @@ urlpatterns = [
    path("membership/list", AdvocateMembershipsView.as_view(), name = "AssociationMembershipView"),
    path("membership/list/<id>", AdvocateMembershipsViewUsingID.as_view(), name = "AssociationMembershipViewUsingID"),   
 
-   path("profile", AdvocatesProfileView.as_view(), name = "AdvocatesListView"),
+   path("profile", AdvocatesProfileView.as_view(), name = "AdvocatesProfileView"),
 
 ]

@@ -180,12 +180,13 @@ class AdvocateMembershipsView(APIView):
     
 class AdvocatesProfileView(APIView):
     def get(self, request):
-        user= request.user
+        user = request.user
         try:
-            advocate = Advocate.objects.get(user = user)
-        except:
-            pass
-    
-        serializer = NormalAdvocateSerializer(advocate, many=True)
+            advocate = Advocate.objects.get(user=user)
+        except Advocate.DoesNotExist:
+            return Response({"detail": "Advocate not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = NormalAdvocateSerializer(advocate)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
