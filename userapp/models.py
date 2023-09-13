@@ -33,8 +33,8 @@ class UserData(AbstractUser):
     objects = UserManager()  
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
 
 USER_CHOICES = (
     ('normal_advocate', 'Normal Advocate'),

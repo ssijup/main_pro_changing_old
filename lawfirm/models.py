@@ -8,8 +8,10 @@ class LawFirm(models.Model):
     specialization=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
     estd_date=models.DateField(default='2000-01-01')
-    created_by =models.OneToOneField('userapp.Advocate',on_delete=models.CASCADE, related_name='created_lawfirms')
+    created_by =models.ForeignKey('userapp.Advocate',on_delete=models.CASCADE, related_name='created_lawfirms')
     is_suspend=models.BooleanField(default= False)
+    def __str__(self): 
+        return self.name+","+str(self.id)
 
 
 class LawfirmAdmin(models.Model):

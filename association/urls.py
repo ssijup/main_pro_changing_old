@@ -7,14 +7,15 @@ from .views import ( AssociationListView,CourtListView, SuspendAssociationView,N
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
                     DeleteNormalAdminView,MembershipFineGetView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
-                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView,MembershipPaymentListView)
+                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView,
+                     MembershipPaymentListView, CreateAssociationView)
 
 
 urlpatterns = [
     
 #court
    path("court/list", CourtListView.as_view(), name = "CourtListView"),
-   path("court/create-court/<id>", CreateCourtView.as_view(), name = "CreateCourtView"),
+   path("court/create-court", CreateCourtView.as_view(), name = "CreateCourtView"),
    path("court/edit-court/<id>", EditCourtView.as_view(), name = "EditCourtView"),
    path("court/delete-court/<id>", CourtListView.as_view(), name = "CourtListView"),
    path("court/editform-court/<id>", CourtEditFormView.as_view(), name = "CourtEditFormView"),
@@ -23,7 +24,7 @@ urlpatterns = [
 
 #association
    path("list", AssociationListView.as_view(), name = "AssociationListView"),
-   path("create-association", AssociationListView.as_view(), name = "AssociationListView"),
+   path("create-association/<id>", CreateAssociationView.as_view(), name = "CreateAssociationView"),
    path("edit-association/<id>", EditAssociationView.as_view(), name = "EditAssociationView"),
    path('delete-association/<id>',DeleteAssociationView.as_view(),name="DeleteAssociationView"),
    path("editform-association/<id>",AssociationEditFormView.as_view() ,name="AssociationEditFormView"),

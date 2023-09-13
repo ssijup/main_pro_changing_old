@@ -26,7 +26,7 @@ api = Instamojo(api_key=settings.API_KEY, auth_token=settings.AUTH_TOKEN, endpoi
 
 
 class CreateCourtView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
     
     def post(self, request):
         serializer = CourtListSerializer(data=request.data)
@@ -84,6 +84,7 @@ class AssociationListView(APIView):
         serializer = AssociationListSerializer(advocates, many = True)
         return Response(serializer.data,status= status.HTTP_200_OK)
         
+class CreateAssociationView(APIView):        
     def post(self, request, id):
         data = request.data
         try :

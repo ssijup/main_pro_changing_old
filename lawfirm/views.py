@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
+from userapp.models import Advocate
 
 from association.permissions import IsAuthenticatedNetmagicsAdmin
 from .permissions import IsAuthenticatedLawfirmAdmin
@@ -22,17 +23,22 @@ class LawFirmListView(APIView):
         return Response(serializer.data,status= status.HTTP_200_OK)
     
 
-    def post(self, request):
+class CreateLawFirmView(APIView):
+    def post(self, request, user_id):
         data = request.data
+        # data['created_by']= user_id
+        advocate = Advocate.objects.get(id = user_id)
+
         serializer = LawFirmListSerializer(data=data)
         try:
             if serializer.is_valid(raise_exception=True):
+                serializer.validated_data['created_by'] = advocate
                 serializer.save()
                 return Response({"message": "Lawfirm details created successfully"}, status=status.HTTP_201_CREATED)
 
-        except serializers.ValidationError:  
+        except Exception as e:  
             return Response({
-                "message": "Validation failed",
+                "message": "Validation failed"+str(e),
             }, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:

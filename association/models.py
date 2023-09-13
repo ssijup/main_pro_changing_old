@@ -9,7 +9,7 @@ class Court(models.Model):
     contact_no=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
     def __str__(self): 
-        return self.name 
+        return self.name+","+str(self.id)
 
 
 class Jurisdiction(models.Model):
@@ -29,7 +29,7 @@ class Association(models.Model):
     email=models.EmailField()
     is_suspend=models.BooleanField(default=False)
     def __str__(self): 
-        return self.name
+        return self.name+","+str(self.id)
 
 
 class MembershipPlan(models.Model):

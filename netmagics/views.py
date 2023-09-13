@@ -33,6 +33,7 @@ class ListNetmagicsAdmin(APIView):
     permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def get(self, request):
+        print(request)
         user=request.user
         print("sijuuuuuuuuuuu :", user)
         val = NetmagicsAdmin.objects.get(user=user)
