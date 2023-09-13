@@ -211,12 +211,6 @@ class DeleteNormalAdminView(APIView):
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
-# class SuperAdminView(APIView):
-#     def get(self, request):
-#         super_admin = Advocate.objects.filter(type_of_user='super_admin')
-#         serializer = ListNormalAdminSerializer(super_admin, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
- 
 class SuperAdminView(APIView):
     permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
@@ -254,23 +248,7 @@ class CreateSuperAdminView(APIView):
         return Response({"message" : "Validation failed","data" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class CreateSuperAdminView(APIView):
-#     def post(self, request, id):
-#         try:
-#             user = UserData.objects.get(id=id)
-#         except UserData.DoesNotExist:
-#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#         try:
-#             advocate = Advocate.objects.get(user=user, type_of_user='super_admin')
-#             return Response({"error": "Role already exists"}, status=status.HTTP_400_BAD_REQUEST)
-#         except Advocate.DoesNotExist:
-#             request.data['user'] = user.id
-#             request.data['type_of_user'] = 'super_admin'
-#             serializer = ListSuperAdminSerializer(data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save(user=user)
-#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+  
 
 
 class DeleteSuperAdminView(APIView):
@@ -284,18 +262,7 @@ class DeleteSuperAdminView(APIView):
         super_admin.delete()
         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-
-# class DeleteSuperAdminView(APIView):
-#     def delete(self, request, id):
-#         try:
-#             super_admin = Advocate.objects.get(user__id=id,type_of_user='super_admin')
-#         except Advocate.DoesNotExist:
-#             return Response({"message": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
-#         super_admin.delete()
-#         return Response({"message": "Object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
-
-        
+     
 
             
 class MembershipPlanView(APIView):
@@ -338,9 +305,6 @@ class MembershipGetViewUsingAssociationID(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, id) :
         try:
-            # user= request.user
-            # auth_user = AssociationSuperAdmin.objects.get(user = user)
-            # association = auth_user.association
             association = Association.objects.get(id = id)
         except Association.DoesNotExist:
             return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
