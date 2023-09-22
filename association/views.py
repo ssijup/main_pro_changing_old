@@ -8,12 +8,13 @@ from rest_framework import status
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 
-from .serializer import ( AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,
+from .serializer import ( MembershipApprovalSerilizer,AssociationListSerializer,CourtListSerializer,AssociationMembershipPaymentSerializer,
                          NotificationSerializer,MembershipFineAmountSerializer, MembershipPlanSerializer,
                          ListNormalAdminSerializer, ListSuperAdminSerializer, AdvocateAssociationSerializer )
 from .models import ( Association, Court, Jurisdiction,AssociationMembershipPayment,AssociationPaymentRequest, 
                      MembershipPlan,MembershipFineAmount,Notification, AdvocateAssociation,
                       AssociationSuperAdmin )
+from userapp.models import UserData, Registrar
 from advocates.serializer import NormalAdvocateSerializer
 from advocates.permissions import IsAuthenticatedAdvocate
 from .permissions import DeleteIsAuthenticatedAssociationAdmin, DeleteIsAuthenticatedNetmagicsAdmin,IsAuthenticatedAssociationAdmin,IsAuthenticatedRegistrar, IsAuthenticatedNetmagicsAdmin
@@ -33,6 +34,9 @@ class CreateCourtView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Court created successfully"}, status=status.HTTP_201_CREATED)
+        # print(serializer.errors)
+        print("uuu")
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -43,6 +47,13 @@ class CourtListView(APIView):
         advocates = Court.objects.all()
         serializer = CourtListSerializer(advocates, many = True)
         return Response(serializer.data,status= status.HTTP_200_OK)
+
+class CourtSortedListView(APIView): 
+
+    def get(self, request):
+        unassigned_courts = Court.objects.exclude(id__in=Registrar.objects.values_list('court', flat=True))
+        serializer = CourtListSerializer(unassigned_courts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def delete(self, request, id):
         try:
@@ -56,12 +67,17 @@ class CourtListView(APIView):
             return Response({
                 "message": "An unexpected error occurred. Please try again later"
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+
+
+
 
 class EditCourtView(APIView):
     permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def patch(self, request, id):
+        print("Court Autheicated User:", request.user)
+
         try:
             court=Court.objects.get(id=id)
             serializer = CourtListSerializer(court, data=request.data, partial=True)
@@ -76,14 +92,19 @@ class EditCourtView(APIView):
         
 
 
+
 class AssociationListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedNetmagicsAdmin ]
 
     def get(self, request):
+        print('ooo ',request.headers)
+        print(request.user, 'jj')
         advocates = Association.objects.all()
         serializer = AssociationListSerializer(advocates, many = True)
         return Response(serializer.data,status= status.HTTP_200_OK)
         
+
+
 class CreateAssociationView(APIView):        
     def post(self, request, id):
         data = request.data
@@ -100,7 +121,7 @@ class CreateAssociationView(APIView):
                 serializer.save()
                 return Response({"message": "Association  created successfully"}, status=status.HTTP_201_CREATED)
 
-        except serializers.ValidationError:  
+        except serializers.ValidationError:
             return Response({
                 "message": "Validation failed"
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -113,7 +134,7 @@ class CreateAssociationView(APIView):
 
 
 class EditAssociationView(APIView):
-    permission_classes = [IsAuthenticatedAssociationAdmin | IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedAssociationAdmin | IsAuthenticatedNetmagicsAdmin]
 
     def patch(self, request, id):
         try:
@@ -131,7 +152,7 @@ class EditAssociationView(APIView):
 # ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 class SuspendAssociationView(APIView):
-    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
     
     def patch(self, request, id):
         try :
@@ -152,7 +173,7 @@ class SuspendAssociationView(APIView):
         except Exception as e:
             return Response({
                 "message": "An unexpected error occurred",
-                "errors": str(e) 
+                "errors": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -160,7 +181,7 @@ class SuspendAssociationView(APIView):
 
 
 class DeleteAssociationView(APIView):
-    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin]
 
     def delete(self, request, id):
         try:
@@ -175,12 +196,14 @@ class DeleteAssociationView(APIView):
                 "message": "An unexpected error occurred .Please try again later"
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
     
 class NormalAdminView(APIView):
     def get(self, request):
         normal_admin = Advocate.objects.filter(type_of_user='normal_admin')
         serializer = ListNormalAdminSerializer(normal_admin, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class CreateNormalAdminView(APIView):
     def post(self, request, id):
@@ -212,7 +235,7 @@ class DeleteNormalAdminView(APIView):
 
 
 class SuperAdminView(APIView):
-    permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    # permission_classes = [IsAuthenticatedRegistrar | IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
     def get(self, request):
         user= request.user
@@ -252,7 +275,7 @@ class CreateSuperAdminView(APIView):
 
 
 class DeleteSuperAdminView(APIView):
-    permission_classes =[DeleteIsAuthenticatedAssociationAdmin |IsAuthenticatedNetmagicsAdmin]
+    # permission_classes =[DeleteIsAuthenticatedAssociationAdmin |IsAuthenticatedNetmagicsAdmin]
     
     def delete(self, request, id):
         try:
@@ -265,16 +288,41 @@ class DeleteSuperAdminView(APIView):
      
 
             
-class MembershipPlanView(APIView):
+# class MembershipPlanView(APIView):
     # permission_classes = [IsAuthenticated]
 
-    def post(self ,request, id):
+    # def post(self ,request, id):
+    #     data = request.data
+    #     try:
+    #         association = Association.objects.get(id = id)
+    #     except Association.DoesNotExist:
+    #         return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
+    #     data['association_id'] = id
+    #     serializer = MembershipPlanSerializer(data=data)
+    #     if serializer.is_valid():
+    #         plan = serializer.validated_data['duration']
+    #         unit = serializer.validated_data['unit_of_plan']
+    #         if MembershipPlan.objects.filter(duration = plan ,unit_of_plan = unit).exists() :
+    #             return Response({"message": "Plan already exits"} ,status =status.HTTP_409_CONFLICT)
+    #         serializer.save()
+    #         return Response({"message " : "Plan added sucesfully" ,'data' :serializer.data} ,status =status.HTTP_201_CREATED)
+    #     return Response({"message" : " Error Invalid data " } ,serializer.errors)
+
+class MembershipPlanView(APIView):
+    def post(self ,request):
         data = request.data
+        user= request.user
         try:
-            association = Association.objects.get(id = id)
+            auth_user = AssociationSuperAdmin.objects.get(user = user)
         except Association.DoesNotExist:
-            return Response({"message" : "Association could not be found"}, status=status.HTTP_400_BAD_REQUEST)
-        data['association_id'] = id
+            return Response({"message" : " No Associations found on this user"},status=status.HTTP_400_BAD_REQUEST)
+
+        association = auth_user.association
+        if not association:
+            return Response({"message" : " No Associations found on this user"},status=status.HTTP_400_BAD_REQUEST)
+       
+        data = request.data.copy()
+        data['association_id'] = association.id
         serializer = MembershipPlanSerializer(data=data)
         if serializer.is_valid():
             plan = serializer.validated_data['duration']
@@ -288,7 +336,7 @@ class MembershipPlanView(APIView):
 
 class MembershipGetView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def get(self, request) :
         try:
             user= request.user
@@ -302,7 +350,7 @@ class MembershipGetView(APIView):
         return Response(serializer.data ,status=status.HTTP_200_OK)
     
 class MembershipGetViewUsingAssociationID(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def get(self, request, id) :
         try:
             association = Association.objects.get(id = id)
@@ -315,7 +363,7 @@ class MembershipGetViewUsingAssociationID(APIView):
     
 
 class ToggleMembershipPlanView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
     
     def patch(self, request, id):
         data=request.data
@@ -350,7 +398,7 @@ class ToggleMembershipPlanView(APIView):
 
 
 class ToggleMembershipFineAmountView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
     def post(self, request, id):
         data= request.data
@@ -406,7 +454,7 @@ class MembershipFineGetView(APIView):
 
 
 class NotificationGetView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
         notification=Notification.objects.filter(association__id = id)
@@ -415,7 +463,7 @@ class NotificationGetView(APIView):
 
 
 class NotificationView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin]
 
     def post(self, request, id ):
         data=request.data
@@ -630,6 +678,7 @@ class AssociationEditFormView(APIView):
                 "message": "An unexpected error occurred"           
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class NotificationEditFormView(APIView):
     def get(self, request, id) :
         try:
@@ -644,28 +693,37 @@ class NotificationEditFormView(APIView):
                         "message": "An unexpected error occurred "
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class CourtCountView(APIView):
     def get(self, request):
         court_count = Court.objects.count()
         return Response({'court_count': court_count}, status=status.HTTP_200_OK)
     
+
 class AssociationCountView(APIView):
     def get(self, request):
         association_count = Association.objects.count()
         return Response({'association_count': association_count}, status=status.HTTP_200_OK)
     
+
 class AssociationPaymentView(APIView):
     def get(self, request,id):
         association = AssociationMembershipPayment.objects.filter(payment_association__id=id)
         serializer = AssociationListSerializer(association, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
 class AssociationAdvocatesView(APIView):
     def get(self, request):
         user= request.user
-        auth_user = AssociationSuperAdmin.objects.get(user = user)
-        association = auth_user.association
-        advocates = AdvocateAssociation.objects.filter(association__id=id)
+        print('user  ',user)
+        try :
+            # user_data = UserData.objects.get()
+            auth_user = AssociationSuperAdmin.objects.get(user = user)
+        except AssociationSuperAdmin.DoesNotExist:
+            return Response({'message' : 'User could not be found at the moment... Please tryagain later'},status=status.HTTP_400_BAD_REQUEST)
+        association_id = auth_user.association.id
+        advocates = AdvocateAssociation.objects.filter(association__id=association_id)
         serializer = AdvocateAssociationSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -674,3 +732,30 @@ class AdvocatesViewUsingID(APIView):
         advocates = AdvocateAssociation.objects.filter(association__id=id)
         serializer = AdvocateAssociationSerializer(advocates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+# new
+class MembershipApprovalView(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin | IsAuthenticatedRegistrar]
+
+    def patch(self, request, id):
+        
+        auth_user = request.user
+        data = request.data
+        try:
+            advocate = Advocate.objects.get(id = id)
+            adv_asso = AdvocateAssociation.objects.get(advocate = advocate )
+        except Advocate.DoesNotExist:
+            return Response({'message' : 'User could not be found.. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
+        except AdvocateAssociation.DoesNotExist:
+            return Response({'message' : 'Advocate could not be found.. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data.copy()
+        data['auth_user_id'] = auth_user.id
+        serilaizer = MembershipApprovalSerilizer(adv_asso,data= data, partial = True)  
+        if serilaizer.is_valid():
+            serilaizer.save()
+            return Response({'message' : 'Status updated sucessfully' , 'data' : serilaizer.data}, status=status.HTTP_200_OK)
+        print(serilaizer.errors)
+        return Response({'message' : 'Validation failed.. Please try again later'}, status=status.HTTP_400_BAD_REQUEST)
+
+

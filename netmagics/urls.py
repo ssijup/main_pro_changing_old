@@ -3,7 +3,7 @@ from .views import AcivityTrackerView
 
 from django.urls import path, include
 
-from .views import NetmagicsAdminCreateView, ListNetmagicsAdmin, DeleteNetmagicsAdmin
+from .views import StartImpersonatingByNetmagicsAdmin,StopImpersonatingByNetmagicsAdmin, NetmagicsAdminCreateView, ListNetmagicsAdmin, DeleteNetmagicsAdmin
 
 
 urlpatterns = [
@@ -13,6 +13,8 @@ urlpatterns = [
     path("admin/delete/<id>", DeleteNetmagicsAdmin.as_view(), name = "DeleteNetmagicsAdmin"),  
     path('activity-tracker/list', AcivityTrackerView.as_view(), name='ActivityTrackerSerializer'),
 
+    path('admin/impersonate/start/<id>', StartImpersonatingByNetmagicsAdmin.as_view(), name='start_impersonation'),
+    path('admin/impersonate/stop/<id>', StopImpersonatingByNetmagicsAdmin.as_view(), name='stop_impersonation'),
 ]
 
 

@@ -5,13 +5,21 @@ from rest_framework import permissions
 #         if request.user and request.user.is_authenticated:
 #             return True
 #         return hasattr(request.user, 'netmagicsadmin')
-    
+
 
 class IsAuthenticatedNetmagicsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
+        print("Net magics admin")
         if not request.user.is_authenticated:
+            print('not autheticated')
             return False
-        return request.user.netmagicsadmin_set.exists()
+        if  request.user.netmagicsadmin_set.exists():
+            print('admin exists')
+            return True
+        else:
+            print('admin is not exists')
+            return False
+    
     
 
 class IsAuthenticatedAssociationAdmin(permissions.BasePermission):

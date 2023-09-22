@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import (LawFirmListView,LawfirmEditFormView, SuspendLawFirmView,EditLawfirmView, DeletelawFirmView,
-                     LawfirmCountView, LawFirmAdvocateListView, DeleteLawFirmAdvocateView, CreateLawFirmView)
+from .views import (LawFirmListView,LawfirmEditFormView, NotificationView, SuspendLawFirmView,EditLawfirmView, DeletelawFirmView,
+                     LawfirmCountView, LawFirmAdvocateListView,NotificationGetView, DeleteLawFirmAdvocateView,LawfirmInvitationRequestView, CreateLawFirmView)
 
 
 urlpatterns = [
@@ -17,5 +17,13 @@ urlpatterns = [
    path("list/<advocate_id>", LawFirmAdvocateListView.as_view(),  name= "LawFirmAdvocateListView"),
    path("delete/<advocate_id>", DeleteLawFirmAdvocateView.as_view(),  name= "DeleteAdvocateLawFirmView"),
 
+
+   #new
+   path("invite-advocate/<adv_id>", LawfirmInvitationRequestView.as_view(),  name= "LawfirmInvitationRequestView"),
+
+   path("notification/list/<id>",NotificationGetView.as_view() ,name="NotificationGetView"),
+   path("notification/edit/<id>",NotificationView.as_view() ,name="NotificationView"),
+   path("notification/create/<id>",NotificationView.as_view() ,name="NotificationView"),
+   path("notification/delete/<id>",NotificationView.as_view() ,name="NotificationView"),
 
 ]

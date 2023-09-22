@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_beat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'userapp',
+    'impersonate',
     'advocates',
     'association',
     'lawfirm',
@@ -53,13 +55,26 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'netmagics.activitymiddleware.CurrentUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
+
+]
+
+
+IMPERSONATE_REQUIRE_SUPERUSER = False
+
+IMPERSONATE_CUSTOM_USER_QUERYSET = "netmagics.permissions.can_impersonate"
+
+CORS_ALLOW_HEADERS = [
+
+    'Authorization',
 ]
 
 
@@ -72,12 +87,15 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = 'userapp.UserData'
  
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
 from datetime import timedelta
 
 SIMPLE_JWT = {

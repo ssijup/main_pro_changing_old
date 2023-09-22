@@ -5,6 +5,8 @@ from .models import ( Court, Jurisdiction, Association, MembershipPlan, Membersh
                      AssociationMembershipPayment, AssociationPaymentRequest, AdvocateAssociation,
                      AssociationSuperAdmin)
 
+from netmagics.activitymiddleware import get_current_user
+
 #signal for court
 @receiver(pre_save, sender=Court)
 def model_pre_save(sender, instance, **kwargs):
@@ -26,14 +28,19 @@ def model_pre_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Court)
 def model_post_save(sender, instance, created, **kwargs):
+    current_user = get_current_user()
+    if current_user:
+        user_name = str(current_user)
+    else:
+        user_name = 'unknown'
     if created:
-        ActivityTracker.objects.create(description=f"Court created with name: {instance.name} and type: {instance.type}")
+        ActivityTracker.objects.create(description=f"Court created with name: {instance.name} and type: {instance.type}", done_by=user_name)
     else:
         if hasattr(instance, '_changed_fields'):
             changed_fields = instance._changed_fields
             if changed_fields:
                 changes_description = ", ".join([f"{field}: {getattr(instance, field)}" for field in changed_fields])
-                ActivityTracker.objects.create(description=f"Court details updated - {changes_description}")
+                ActivityTracker.objects.create(description=f"Court details updated - {changes_description}", done_by=user_name)
 
 #signal for jurisdiction
 @receiver(pre_save, sender=Jurisdiction)

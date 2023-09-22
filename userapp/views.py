@@ -42,7 +42,7 @@ class AdvocatesCountView(APIView):
 
 
 class TestapiForAuthr(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def get(self, request):
         user=request.user
         print("user :",user.name,"  ",user.id,"  ", user.email)

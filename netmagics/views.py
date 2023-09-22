@@ -4,6 +4,8 @@ from rest_framework import serializers
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from impersonate.views import impersonate as django_impersonate
+
 
 from .models import NetmagicsAdmin
 from userapp.models import UserData
@@ -30,7 +32,7 @@ class NetmagicsAdminCreateView(APIView):
 
 
 class ListNetmagicsAdmin(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def get(self, request):
         print(request)
@@ -44,7 +46,7 @@ class ListNetmagicsAdmin(APIView):
     
 
 class DeleteNetmagicsAdmin(APIView):
-    permission_classes = [DeleteIsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [DeleteIsAuthenticatedNetmagicsAdmin]
     # permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def delete(self, request, id):
@@ -65,3 +67,27 @@ class AcivityTrackerView(APIView):
         registrar = ActivityTracker.objects.all()
         serializer = ActivityTrackerSerializer(registrar, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class StartImpersonatingByNetmagicsAdmin(APIView):
+    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+
+    def get(self, request, id):
+        print("pppppp ",request.user )
+        print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
+        response = django_impersonate(request, id)
+        print(response)
+
+        if response.status_code == 302:
+            print("siju impersonating", id)
+            return Response({"message": "impersonation started"})
+        return Response({"message": "You are not allowed for this action"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class StopImpersonatingByNetmagicsAdmin(APIView):
+    def post(self, request, id):
+        response = django_impersonate(request, id)
+        if response.status_code == 302:
+            return Response({"message": "impersonation stopped"})
+        return Response({"message": "You are not allowed for this action"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+

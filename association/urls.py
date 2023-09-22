@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import ( AssociationListView,CourtListView, SuspendAssociationView,NotificationGetView,
+from .views import (CourtSortedListView,AssociationListView,CourtListView, SuspendAssociationView,NotificationGetView,
                     EditCourtView,MembershipGetView,MembershipPlanView,EditAssociationView,CourtEditFormView,
                     ToggleMembershipFineAmountView,Paymentsucessfull,ToggleMembershipPlanView, AssociationEditFormView,
                     MembershipPaymentView,DeleteAssociationView, NotificationView, NotificationEditFormView,
                     NormalAdminView, DeleteAssociationView, CreateCourtView, CreateNormalAdminView, 
                     DeleteNormalAdminView,MembershipFineGetView,SuperAdminView, CreateSuperAdminView,DeleteSuperAdminView, 
-                     CourtCountView, AssociationCountView, AssociationPaymentView, AssociationAdvocatesView,
+                     CourtCountView, AssociationCountView, AssociationPaymentView, MembershipApprovalView,AssociationAdvocatesView,
                      MembershipPaymentListView, CreateAssociationView, AdvocatesViewUsingID,
                      MembershipGetViewUsingAssociationID)
 
@@ -46,7 +46,7 @@ urlpatterns = [
    path("membership-plan/list",MembershipGetView.as_view(),name="MembershipGetView"),#made changes
    path("membership-plan/list/<id>",MembershipGetViewUsingAssociationID.as_view(),name="MembershipGetViewUsingAssociationID"),
 
-   path("membership-plan/create/<id>",MembershipPlanView.as_view(),name="MembershipPlanView"),
+   path("membership-plan/create",MembershipPlanView.as_view(),name="MembershipPlanView"),
    path("membership-plan/edit/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
    path("membership-plan/delete/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
    path("membership-plan/editform/<id>",ToggleMembershipPlanView.as_view(),name="ToggleMembershipPlanView"),
@@ -81,4 +81,12 @@ urlpatterns = [
    path("advocates/list", AssociationAdvocatesView.as_view() ,name="AssociationAdvocatesView"),
    path("advocates/list/<id>", AdvocatesViewUsingID.as_view() ,name="AdvocatesViewUsingID"),
  
+
+
+# new
+   path("advocates/membershipapproval/<id>", MembershipApprovalView.as_view() ,name="MembershipApprovalView"),
+   path("court/sorted/list", CourtSortedListView.as_view() ,name="CourtSortedListView"),
+
+
+
 ]

@@ -19,7 +19,7 @@ class RegistrarView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreateRegistrarView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def post(self, request, court_id):      
         email = request.data.get('email')
@@ -42,7 +42,7 @@ class CreateRegistrarView(APIView):
 
     
 class DeleteRegistrarView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin]
 
     def delete(self, request, id):
         try:
@@ -54,7 +54,7 @@ class DeleteRegistrarView(APIView):
     
 
 class EditRegistrarView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedRegistrar]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedRegistrar]
 
     def patch(self, request, id):
         try:

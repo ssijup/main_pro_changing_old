@@ -1,6 +1,13 @@
 from django.db import models
 # from userapp.models import UserData
 
+
+APPROVAL_STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+
 class Court(models.Model):
     name=models.CharField(max_length=200)
     type=models.CharField(max_length=200)
@@ -61,12 +68,12 @@ class AssociationMembershipPayment(models.Model):
     for_user_details = models.ForeignKey('userapp.Advocate' ,on_delete= models.SET_NULL ,null = True,related_name='useradvocate')
     payment_id =models.CharField(max_length=200)
     payment_status = models.BooleanField(default = False)
-    payment_done_at = models.DateField(auto_now_add= True)  
+    payment_done_at = models.DateField(auto_now_add= True)
     payment_expiry_date = models.DateField(default='2000-01-01')
     payment_total_amount_paid = models.IntegerField(default=0)
     payment_status_of_gateway = models.CharField(max_length=25 ,default= 'failed')
     payment_association=models.ForeignKey(Association,on_delete=models.CASCADE, default=0)
-    def __str__(self): 
+    def __str__(self):
         return str(self.id)
 
 
@@ -83,7 +90,10 @@ class AdvocateAssociation(models.Model):
     advocate = models.ForeignKey('userapp.Advocate',on_delete=models.CASCADE)
     association = models.ForeignKey(Association,on_delete=models.SET_NULL,null=True,blank=True)
     advocate_status = models.BooleanField(default=False)
-
+    approval_status = models.CharField(max_length= 50, choices=APPROVAL_STATUS_CHOICES, default='PENDING')
+    approved_by = models.ForeignKey('userapp.UserData', on_delete=models.SET_NULL, null=True, blank=True)
+    approved_date = models.DateField(null=True, blank=True)
+    description = models.CharField(max_length=100, null = True, blank=True, default ='Not given')
 
 
 

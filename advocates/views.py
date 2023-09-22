@@ -11,13 +11,13 @@ from .permissions import IsAuthenticatedAdvocate
 from rest_framework import serializers
 from userapp.models import Advocate,UserData
 from association.models import AssociationMembershipPayment, AdvocateAssociation
-from lawfirm.models import AdvocateLawfirm
+from lawfirm.models import AdvocateLawfirmInvitation
 from association.serializer import AdvocateAssociationSerializer
-from lawfirm.serializer import AdvocateLawfirmSerializer
+from lawfirm.serializer import AdvocateLawfirmInvitationSerializer
 from association.serializer import AssociationMembershipPaymentSerializer
 
 class AdvocatesListView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         normal_advocate = Advocate.objects.filter(type_of_user='normal_advocate')
@@ -47,7 +47,7 @@ class CreateAdvocatesListView(APIView):
 
 
 class SuspendAdvocateView(APIView):
-    permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin | IsAuthenticatedLawfirmAdmin]
+    # permission_classes = [IsAuthenticatedNetmagicsAdmin | IsAuthenticatedAssociationAdmin | IsAuthenticatedLawfirmAdmin]
 
     def patch(self, request, id):
         try :
@@ -146,18 +146,18 @@ class AssociationAdvocateView(APIView):
 
 class AdvocateLawFirmListView(APIView):
     def get(self, request, id):
-        advocates = AdvocateLawfirm.objects.filter(lawfirm__id=id)
-        serializer = AdvocateLawfirmSerializer(advocates, many = True)
+        advocates = AdvocateLawfirmInvitation.objects.filter(lawfirm__id=id)
+        serializer = AdvocateLawfirmInvitationSerializer(advocates, many = True)
         return Response(serializer.data,status= status.HTTP_200_OK)
     
 class DeleteAdvocateLawFirmView(APIView):
     def delete(self, request, id):
         try:
-            advocates=AdvocateLawfirm.objects.get(lawfirm__id=id)
+            advocates=AdvocateLawfirmInvitation.objects.get(lawfirm__id=id)
             advocates.delete()
             return Response({"message" : "LawFirm deleted sucessfully"})
         
-        except AdvocateLawfirm.DoesNotExist:
+        except AdvocateLawfirmInvitation.DoesNotExist:
             return Response({"message" : "The LawFirm cout not be found"})
         except Exception as e:
             return Response({

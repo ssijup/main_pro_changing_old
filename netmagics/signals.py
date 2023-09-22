@@ -2,6 +2,8 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from netmagics.models import ActivityTracker
 from .models import NetmagicsAdmin
+from globals import current_global_user
+
 
 
 #signal for netmagics admin
@@ -17,6 +19,7 @@ def model_pre_save(sender, instance, **kwargs):
             if getattr(instance, field.name) != getattr(db_instance, field.name):
                 changed_fields.append(field.name)
         instance._changed_fields = changed_fields
+
 
 @receiver(post_save, sender=NetmagicsAdmin)
 def model_post_save(sender, instance, created, **kwargs):

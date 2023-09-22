@@ -10,7 +10,9 @@ class NetmagicsAdmin(models.Model):
     def __str__(self): 
         return self.user.email+","+str(self.id)
     
+    
 class ActivityTracker(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     description=models.TextField()
     done_by=models.CharField(max_length=250,default='unknown')
+    

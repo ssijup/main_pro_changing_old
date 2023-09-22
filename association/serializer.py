@@ -6,6 +6,7 @@ from userapp.models import Advocate, UserData
 from advocates.serializer import UserSerializer
 from .models import AssociationSuperAdmin
 from association.models import Association
+from advocates.serializer import NormalAdvocateSerializer
 
 
 class CourtListSerializer(serializers.ModelSerializer):
@@ -67,16 +68,30 @@ class AssociationMembershipPaymentSerializer(serializers.ModelSerializer):
 
 
 class AdvocateAssociationSerializer(serializers.ModelSerializer):
+    advocate = NormalAdvocateSerializer()
+    association = AssociationListSerializer(read_only = True)
+    approved_by = UserSerializer(read_only=True)
     class Meta:
         model=AdvocateAssociation
         fields="__all__"
 
 
 class ListSuperAdminSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True) 
+    user = UserSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=UserData.objects.all(), source='user')
     association = AssociationListSerializer(read_only=True) 
     association_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Association.objects.all(), source='association')
     class Meta:
         model = AssociationSuperAdmin
         fields = "__all__"
+
+
+class MembershipApprovalSerilizer(serializers.ModelSerializer):
+    advocate = NormalAdvocateSerializer(read_only=True)
+    association = AssociationListSerializer(read_only = True)
+    approved_by = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    auth_user_id = serializers.PrimaryKeyRelatedField(write_only = True,queryset=UserData.objects.all(), source='approved_by')
+    class Meta:
+        model=AdvocateAssociation
+        fields="__all__" 

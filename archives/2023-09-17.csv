@@ -1,0 +1,119 @@
+time,description,done_by
+2023-09-13 08:56:49.970442+00:00,NetmagicsAdmin created with name: net and email: net@gmail.com,unknown
+2023-09-13 09:04:02.654867+00:00,Registrar created with name: rithin_registrar and email: rithin_registrar@gmail.com,unknown
+2023-09-13 09:08:07.993073+00:00,Registrar updated - address: given,unknown
+2023-09-13 09:08:15.858684+00:00,Registrar updated - address: not given,unknown
+2023-09-13 09:10:32.056793+00:00,Registrar created with name: rithin_registrar2 and email: rithin_registrar2@gmail.com,unknown
+2023-09-13 09:26:40.704624+00:00,Advocate created with name: netmagics4_rithin and email: netmagics4_rithin@gmail.com,unknown
+2023-09-14 10:53:37.278032+00:00,Advocate created with name: sam and email: sam@gmail.com,unknown
+2023-09-14 11:00:14.384567+00:00,MembershipPlan updated - unit_of_plan: month,unknown
+2023-09-14 11:00:40.755348+00:00,"AssociationPaymentRequest created by user: sam@gmail.com , normal_advocate,3 and payment request id: 998feca23563470a86e2ebd0b1ebb806",unknown
+2023-09-14 11:01:25.097797+00:00,AssociationMembershipPayment created with payment id: 998feca23563470a86e2ebd0b1ebb806 and status: True,unknown
+2023-09-14 11:01:25.125224+00:00,Advocate related to Association created with advocate name: sam and association: Ernakulam Court Association,unknown
+2023-09-14 12:37:06.220121+00:00,Court created with name: SIJUSURESH ASSOCIATES and type: Legal,unknown
+2023-09-14 12:38:45.464864+00:00,Registrar created with name: ajith and email: ajith@gmail.com,unknown
+2023-09-14 12:39:05.775406+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 12:39:06.665891+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 12:42:41.146269+00:00,Registrar created with name: siju and email: siju@gmail.com,unknown
+2023-09-14 12:44:15.768559+00:00,Association created with name: Kollam and court: Ernakulam DC,unknown
+2023-09-14 12:45:35.216345+00:00,Association Admin created with name: ashik and association: Kollam,unknown
+2023-09-14 12:58:44.775637+00:00,LawFirm updated - is_suspend: True,unknown
+2023-09-14 12:58:45.676726+00:00,LawFirm updated - is_suspend: False,unknown
+2023-09-14 12:58:46.797679+00:00,LawFirm updated - is_suspend: True,unknown
+2023-09-14 12:58:47.523641+00:00,LawFirm updated - is_suspend: False,unknown
+2023-09-14 12:59:10.676267+00:00,LawFirm updated - contact_no: 9645655408,unknown
+2023-09-14 12:59:20.691861+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 12:59:34.732647+00:00,Advocate updated - profile_image: ,unknown
+2023-09-14 12:59:47.588621+00:00,Advocate updated - profile_image: ,unknown
+2023-09-14 12:59:57.477314+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:01:24.103902+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 13:01:28.149817+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 13:02:44.885054+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 13:02:45.689033+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:04:41.633842+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 13:04:42.393050+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:21:52.065958+00:00,MembershipPlan created with price: 10000 and association: Kollam,unknown
+2023-09-14 13:26:23.734142+00:00,MembershipPlan created with price: 10000 and association: Kollam,unknown
+2023-09-14 13:26:52.240137+00:00,MembershipPlan created with price: 1000 and association: Kollam,unknown
+2023-09-14 13:35:37.064988+00:00,"MembershipPlan updated - duration: 1222, membership_price: 1000000000",unknown
+2023-09-14 13:36:24.162570+00:00,MembershipPlan created with price: 10000 and association: Kollam,unknown
+2023-09-14 13:36:52.499811+00:00,"MembershipPlan updated - duration: 500000, unit_of_plan: month",unknown
+2023-09-14 13:37:50.948659+00:00,LawFirm updated - is_suspend: True,unknown
+2023-09-14 13:37:51.633472+00:00,LawFirm updated - is_suspend: False,unknown
+2023-09-14 13:38:03.879533+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:39:17.835048+00:00,LawFirm created with name: rajarajeshewari by: advocate_rithin,unknown
+2023-09-14 13:39:38.089624+00:00,LawFirm updated - name: abc firms,unknown
+2023-09-14 13:40:14.580494+00:00,LawFirm updated - specialization: Familly,unknown
+2023-09-14 13:40:26.858726+00:00,LawFirm updated - address: abc,unknown
+2023-09-14 13:40:30.241828+00:00,LawFirm updated - is_suspend: True,unknown
+2023-09-14 13:40:31.033219+00:00,LawFirm updated - is_suspend: False,unknown
+2023-09-14 13:40:35.299062+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 13:40:36.035874+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:40:44.736543+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 13:44:13.388853+00:00,Advocate created with name: nithin and email: nithin@gmail.com,unknown
+2023-09-14 13:44:45.783582+00:00,"AssociationPaymentRequest created by user: nithin@gmail.com , normal_advocate,4 and payment request id: e9c1a6504c8c42399bc2539e93f53751",unknown
+2023-09-14 13:45:23.126973+00:00,AssociationMembershipPayment created with payment id: e9c1a6504c8c42399bc2539e93f53751 and status: True,unknown
+2023-09-14 13:45:23.144925+00:00,Advocate related to Association created with advocate name: nithin and association: Kollam,unknown
+2023-09-14 13:53:32.023183+00:00,Court created with name: kochi and type: District,unknown
+2023-09-14 13:55:07.662800+00:00,Registrar created with name: abc and email: abc@gmail.com,unknown
+2023-09-14 13:55:26.022735+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 13:55:26.936887+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 13:55:44.858990+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 13:55:46.537610+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 13:56:58.102671+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 13:56:58.711117+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 14:05:21.655759+00:00,Court created with name: Palakad and type: District,unknown
+2023-09-14 14:06:00.648185+00:00,Registrar created with name: ram and email: ram@gmail.com,unknown
+2023-09-14 14:07:27.650960+00:00,Association created with name: Phcaa and court: Palakad,unknown
+2023-09-14 14:08:10.988493+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 14:08:12.356026+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 14:08:56.883498+00:00,Association Admin created with name: rahul and association: Phcaa,unknown
+2023-09-14 14:12:13.847138+00:00,Association Admin created with name: raju and association: Phcaa,unknown
+2023-09-14 14:14:12.205196+00:00,MembershipPlan created with price: 10000 and association: Phcaa,unknown
+2023-09-14 14:51:06.460700+00:00,Court created with name: Alappuzha and type: District,unknown
+2023-09-14 14:52:32.741518+00:00,Registrar created with name: sam and email: samm@gmail.com,unknown
+2023-09-14 14:52:54.988942+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 14:52:55.662314+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 14:54:56.612556+00:00,Association created with name: Apk and court: Alappuzha,unknown
+2023-09-14 14:56:08.524352+00:00,Association Admin created with name: alapuzha admin and association: Apk,unknown
+2023-09-14 14:58:48.592849+00:00,MembershipPlan created with price: 10000 and association: Apk,unknown
+2023-09-14 15:04:24.268958+00:00,MembershipPlan created with price: 10000 and association: Apk,unknown
+2023-09-14 15:04:55.646181+00:00,MembershipPlan created with price: 20000 and association: Apk,unknown
+2023-09-14 15:06:41.309514+00:00,Advocate created with name: a and email: a@gmail.com,unknown
+2023-09-14 15:07:21.982542+00:00,"AssociationPaymentRequest created by user: a@gmail.com , normal_advocate,5 and payment request id: ed8a0772baa54e6dbdc4f616262a2e5f",unknown
+2023-09-14 15:08:07.317740+00:00,AssociationMembershipPayment created with payment id: ed8a0772baa54e6dbdc4f616262a2e5f and status: True,unknown
+2023-09-14 15:08:07.328712+00:00,Advocate related to Association created with advocate name: a and association: Apk,unknown
+2023-09-14 15:14:33.908498+00:00,Court created with name: thothukudi and type: District,unknown
+2023-09-14 15:15:09.079553+00:00,Registrar created with name: aby and email: aby@gmail.com,unknown
+2023-09-14 15:15:27.921904+00:00,Association updated - is_suspend: True,unknown
+2023-09-14 15:15:29.840722+00:00,Association updated - is_suspend: False,unknown
+2023-09-14 15:18:22.853624+00:00,Association created with name: thothukudi lawyers association and court: thothukudi,unknown
+2023-09-14 15:19:24.949845+00:00,Association Admin created with name: hadhi and association: thothukudi lawyers association,unknown
+2023-09-14 15:22:46.397640+00:00,MembershipPlan created with price: 5000 and association: thothukudi lawyers association,unknown
+2023-09-14 15:25:53.309186+00:00,Advocate created with name: nithin krishnan and email: nithin@khcaa.com,unknown
+2023-09-14 15:27:14.229990+00:00,"AssociationPaymentRequest created by user: nithin@khcaa.com , normal_advocate,6 and payment request id: 345dc8880eeb49d68ed478c0ac88fcb7",unknown
+2023-09-14 15:27:56.958013+00:00,AssociationMembershipPayment created with payment id: 345dc8880eeb49d68ed478c0ac88fcb7 and status: True,unknown
+2023-09-14 15:27:56.990064+00:00,Advocate related to Association created with advocate name: nithin krishnan and association: thothukudi lawyers association,unknown
+2023-09-14 15:31:21.957280+00:00,Advocate created with name: sangeeth s rajan and email: sangeeth@gmail.com,unknown
+2023-09-14 15:31:41.069750+00:00,"AssociationPaymentRequest created by user: sangeeth@gmail.com , normal_advocate,7 and payment request id: 4d57897b584644729c903515102b1504",unknown
+2023-09-14 15:32:45.340975+00:00,AssociationMembershipPayment created with payment id: 4d57897b584644729c903515102b1504 and status: True,unknown
+2023-09-14 15:32:45.374448+00:00,Advocate related to Association created with advocate name: sangeeth s rajan and association: thothukudi lawyers association,unknown
+2023-09-14 15:33:40.355307+00:00,Advocate updated - profile_image: ,unknown
+2023-09-14 15:33:55.001971+00:00,Advocate updated - profile_image: ,unknown
+2023-09-14 15:34:01.193024+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:05.706496+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:06.644168+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:06.863833+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:09.054177+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:13.178753+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:13.339992+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:13.545838+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:14.275206+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:14.445674+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:14.617797+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:15.793952+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:15.954213+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:16.109870+00:00,Advocate updated - is_suspend: False,unknown
+2023-09-14 15:34:16.323790+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:18.781781+00:00,Advocate updated - is_suspend: True,unknown
+2023-09-14 15:34:19.001748+00:00,Advocate updated - is_suspend: False,unknown
